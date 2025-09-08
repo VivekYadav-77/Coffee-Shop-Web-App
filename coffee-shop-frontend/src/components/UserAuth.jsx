@@ -64,7 +64,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
       return
     }
 
-    // Frontend demo validation - your friend will replace this with backend API call
+    // Frontend demo validation
     const demoUsers = {
       'Akshat@gmail.com': { password: 'user123', name: 'Akshat' },
       'Shivang@gmail.com': { password: 'coffee456', name: 'Shivang' },
@@ -73,7 +73,6 @@ const UserAuth = ({ onLogin, onCancel }) => {
     }
 
     if (isLogin) {
-      // Check if user email and password match (demo validation)
       const demoUser = demoUsers[formData.email]
       if (demoUser && demoUser.password === formData.password) {
         const userData = {
@@ -83,7 +82,6 @@ const UserAuth = ({ onLogin, onCancel }) => {
           email: formData.email,
           loginTime: new Date().toISOString()
         }
-        
         onLogin(userData)
       } else {
         setErrors({ 
@@ -92,7 +90,6 @@ const UserAuth = ({ onLogin, onCancel }) => {
         })
       }
     } else {
-      // For signup, simulate success (backend will handle registration)
       setTimeout(() => {
         const userData = {
           id: Date.now(),
@@ -101,7 +98,6 @@ const UserAuth = ({ onLogin, onCancel }) => {
           email: formData.email,
           loginTime: new Date().toISOString()
         }
-        
         onLogin(userData)
       }, 1000)
     }
@@ -119,133 +115,270 @@ const UserAuth = ({ onLogin, onCancel }) => {
   }
 
   return (
-    <div className="auth-container">
-      <div className="auth-background">
-        <div className="auth-card">
-          <div className="auth-header">
-            <button className="back-btn" onClick={onCancel}>
+    <div style={{
+      minHeight: '100vh',
+      paddingTop: '120px',
+      paddingBottom: '2rem',
+      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #764ba2 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '120px 1rem 2rem'
+    }}>
+      <div style={{
+        display: 'flex',
+        maxWidth: '900px',
+        width: '100%',
+        background: 'rgba(26, 26, 46, 0.2)',
+        backdropFilter: 'blur(30px)',
+        border: '1px solid rgba(255, 255, 255, 0.15)',
+        borderRadius: '24px',
+        overflow: 'hidden',
+        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)'
+      }}>
+        <div style={{ padding: '3rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', color: 'white' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+            <button 
+              onClick={onCancel}
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '12px',
+                padding: '0.8rem',
+                color: 'white',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
               <ArrowLeft size={20} />
             </button>
-            <div className="auth-logo">
-              <Coffee size={40} className="auth-logo-icon" />
-              <h2>BREW CRAFT</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, justifyContent: 'center' }}>
+              <Coffee size={40} style={{ color: '#ff6b6b' }} />
+              <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", margin: 0, fontSize: '1.5rem', fontWeight: 700 }}>BREW CRAFT</h2>
             </div>
           </div>
 
-          <div className="auth-form-container">
-            <h3 className="auth-title">
-              {isLogin ? 'Welcome Back!' : 'Join Our Coffee Community'}
-            </h3>
-            <p className="auth-subtitle">
-              {isLogin 
-                ? 'Sign in to access your account and continue your coffee journey'
-                : 'Create your account and discover amazing coffee experiences'
-              }
-            </p>
+          <h3 style={{ 
+            fontFamily: "'Space Grotesk', sans-serif", 
+            fontSize: '2rem', 
+            fontWeight: 700, 
+            textAlign: 'center', 
+            marginBottom: '0.5rem' 
+          }}>
+            {isLogin ? 'Welcome Back!' : 'Join Our Coffee Community'}
+          </h3>
+          
+          <p style={{ 
+            color: 'rgba(255, 255, 255, 0.8)', 
+            textAlign: 'center', 
+            marginBottom: '2rem', 
+            lineHeight: 1.5, 
+            fontSize: '0.95rem' 
+          }}>
+            {isLogin 
+              ? 'Sign in to access your account and continue your coffee journey'
+              : 'Create your account and discover amazing coffee experiences'
+            }
+          </p>
 
-            {/* Demo credentials info for testing */}
-            {isLogin && (
-              <div style={{
-                background: 'rgba(255, 107, 107, 0.1)',
-                border: '1px solid rgba(255, 107, 107, 0.3)',
-                borderRadius: '12px',
-                padding: '1rem',
-                marginBottom: '1.5rem',
-                fontSize: '0.85rem',
-                color: 'rgba(255, 255, 255, 0.8)'
-              }}>
-                <strong style={{color: '#ff6b6b'}}>Demo User Accounts:</strong><br/>
-                Akshat@gmail.com / user123<br/>
-                Shivang@gmail.com / coffee456<br/>
-                Raj@yahoo.com / brew789<br/>
-                Vivek@gmail.com / latte123
+          {isLogin && (
+            <div style={{
+              background: 'rgba(255, 107, 107, 0.1)',
+              border: '1px solid rgba(255, 107, 107, 0.3)',
+              borderRadius: '12px',
+              padding: '1rem',
+              marginBottom: '1.5rem',
+              fontSize: '0.85rem',
+              color: 'rgba(255, 255, 255, 0.8)'
+            }}>
+              <strong style={{color: '#ff6b6b'}}>Demo User Accounts:</strong><br/>
+              Akshat@gmail.com / user123<br/>
+              Shivang@gmail.com / coffee456<br/>
+              Raj@yahoo.com / brew789<br/>
+              Vivek@gmail.com / latte123
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {!isLogin && (
+              <div>
+                <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: `1px solid ${errors.name ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                    borderRadius: '12px',
+                    padding: '1rem 1.2rem',
+                    color: 'white',
+                    fontSize: '1rem',
+                    backdropFilter: 'blur(20px)',
+                    boxSizing: 'border-box'
+                  }}
+                  placeholder="Enter your full name"
+                />
+                {errors.name && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.name}</span>}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="auth-form">
-              {!isLogin && (
-                <div className="input-group">
-                  <label htmlFor="name">Full Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className={errors.name ? 'error' : ''}
-                    placeholder="Enter your full name"
-                  />
-                  {errors.name && <span className="error-text">{errors.name}</span>}
-                </div>
-              )}
-
-              <div className="input-group">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className={errors.email ? 'error' : ''}
-                  placeholder="Enter your email"
-                />
-                {errors.email && <span className="error-text">{errors.email}</span>}
-              </div>
-
-              <div className="input-group">
-                <label htmlFor="password">Password</label>
-                <div className="password-input">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className={errors.password ? 'error' : ''}
-                    placeholder="Enter your password"
-                  />
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                {errors.password && <span className="error-text">{errors.password}</span>}
-              </div>
-
-              {!isLogin && (
-                <div className="input-group">
-                  <label htmlFor="confirmPassword">Confirm Password</label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className={errors.confirmPassword ? 'error' : ''}
-                    placeholder="Confirm your password"
-                  />
-                  {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
-                </div>
-              )}
-
-              <button type="submit" className="auth-submit-btn">
-                {isLogin ? 'Sign In' : 'Create Account'}
-              </button>
-            </form>
-
-            <div className="auth-switch">
-              <p>
-                {isLogin ? "Don't have an account? " : "Already have an account? "}
-                <button type="button" className="switch-btn" onClick={toggleMode}>
-                  {isLogin ? 'Sign Up' : 'Sign In'}
-                </button>
-              </p>
+            <div>
+              <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                style={{
+                  width: '100%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: `1px solid ${errors.email ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                  borderRadius: '12px',
+                  padding: '1rem 1.2rem',
+                  color: 'white',
+                  fontSize: '1rem',
+                  backdropFilter: 'blur(20px)',
+                  boxSizing: 'border-box'
+                }}
+                placeholder="Enter your email"
+              />
+              {errors.email && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.email}</span>}
             </div>
+
+            <div>
+              <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: `1px solid ${errors.password ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                    borderRadius: '12px',
+                    padding: '1rem 1.2rem',
+                    color: 'white',
+                    fontSize: '1rem',
+                    backdropFilter: 'blur(20px)',
+                    boxSizing: 'border-box',
+                    paddingRight: '3rem'
+                  }}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '1rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {errors.password && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.password}</span>}
+            </div>
+
+            {!isLogin && (
+              <div>
+                <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: `1px solid ${errors.confirmPassword ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                    borderRadius: '12px',
+                    padding: '1rem 1.2rem',
+                    color: 'white',
+                    fontSize: '1rem',
+                    backdropFilter: 'blur(20px)',
+                    boxSizing: 'border-box'
+                  }}
+                  placeholder="Confirm your password"
+                />
+                {errors.confirmPassword && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.confirmPassword}</span>}
+              </div>
+            )}
+
+            <button 
+              type="submit"
+              style={{
+                background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e3c 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '1.2rem',
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                fontFamily: "'Space Grotesk', sans-serif",
+                cursor: 'pointer',
+                marginTop: '1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                width: '100%'
+              }}
+            >
+              {isLogin ? 'Sign In' : 'Create Account'}
+            </button>
+          </form>
+
+          <div style={{ marginTop: '2rem', textAlign: 'center', paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <p style={{ color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+              {isLogin ? "Don't have an account? " : "Already have an account? "}
+              <button 
+                type="button" 
+                onClick={toggleMode}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#ff6b6b',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                {isLogin ? 'Sign Up' : 'Sign In'}
+              </button>
+            </p>
           </div>
+        </div>
+
+        <div style={{
+          flex: 1,
+          background: 'rgba(139, 69, 19, 0.1)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <span style={{ fontSize: '6rem', zIndex: 2, filter: 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4))' }}>☕</span>
         </div>
       </div>
     </div>

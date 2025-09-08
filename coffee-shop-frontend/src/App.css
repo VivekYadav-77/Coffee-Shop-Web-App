@@ -932,10 +932,10 @@
 }
 
 .cart-content {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 3rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: stretch;
 }
 
 .cart-items {
@@ -1082,8 +1082,9 @@
 /* Cart Summary - FIXED ALIGNMENT */
 .cart-summary {
   width: 100%;
-  max-width: 400px;
-  justify-self: end;
+  max-width: 500px;
+  align-self: center;
+  margin-top: 2rem;
 }
 
 .cart-summary-card {

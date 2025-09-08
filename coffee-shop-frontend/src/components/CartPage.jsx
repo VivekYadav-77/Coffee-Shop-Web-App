@@ -105,6 +105,7 @@ const CartPage = ({
             ))}
           </div>
 
+          {/* Only show cart summary if cart has items */}
           <div className="cart-summary">
             <div className="cart-summary-card">
               <h3>Order Summary</h3>

@@ -20,7 +20,6 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
       ...prev,
       [name]: value
     }))
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -32,7 +31,6 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
   const validateForm = () => {
     const newErrors = {}
 
-    // For login, only check employee code and password
     if (!formData.employeeCode) {
       newErrors.employeeCode = 'Employee code is required'
     } else if (!/^EMP\d{4}$/.test(formData.employeeCode)) {
@@ -45,7 +43,6 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
       newErrors.password = 'Password must be at least 6 characters'
     }
 
-    // For signup, check additional fields
     if (!isLogin) {
       if (!formData.employeeName) {
         newErrors.employeeName = 'Employee name is required'
@@ -73,7 +70,6 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
       return
     }
 
-    // Frontend demo validation - your friend will replace this with backend API call
     const demoEmployeeCodes = {
       'EMP1001': 'admin123',
       'EMP1002': 'manager456', 
@@ -83,17 +79,15 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
     }
 
     if (isLogin) {
-      // Check if employee code and password match (demo validation)
       if (demoEmployeeCodes[formData.employeeCode] === formData.password) {
         const employeeData = {
           id: Date.now(),
           type: 'employee',
-          employeeName: 'Employee', // Backend will provide real name
+          employeeName: 'Employee',
           employeeCode: formData.employeeCode,
-          department: 'Unknown', // Backend will provide real department
+          department: 'Unknown',
           loginTime: new Date().toISOString()
         }
-        
         onLogin(employeeData)
       } else {
         setErrors({ 
@@ -102,7 +96,6 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
         })
       }
     } else {
-      // For signup, simulate success (backend will handle registration)
       setTimeout(() => {
         const employeeData = {
           id: Date.now(),
@@ -113,7 +106,6 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
           employeeCode: formData.employeeCode,
           loginTime: new Date().toISOString()
         }
-        
         onLogin(employeeData)
       }, 1000)
     }
@@ -133,166 +125,318 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
   }
 
   return (
-    <div className="auth-container">
-      <div className="auth-background">
-        <div className="auth-card employee-auth-card">
-          <div className="auth-header">
-            <button className="back-btn" onClick={onCancel}>
+    <div style={{
+      minHeight: '100vh',
+      paddingTop: '120px',
+      paddingBottom: '2rem',
+      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #764ba2 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '120px 1rem 2rem'
+    }}>
+      <div style={{
+        display: 'flex',
+        maxWidth: '500px',
+        width: '100%',
+        background: 'rgba(26, 26, 46, 0.2)',
+        backdropFilter: 'blur(30px)',
+        border: '1px solid rgba(255, 255, 255, 0.15)',
+        borderRadius: '24px',
+        overflow: 'hidden',
+        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)',
+        flexDirection: 'column'
+      }}>
+        <div style={{ padding: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', color: 'white' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+            <button 
+              onClick={onCancel}
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '12px',
+                padding: '0.8rem',
+                color: 'white',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
               <ArrowLeft size={20} />
             </button>
-            <div className="auth-logo">
-              <UserCheck size={40} className="employee-logo-icon" />
-              <h2>BREW CRAFT EMPLOYEE</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, justifyContent: 'center' }}>
+              <UserCheck size={40} style={{ color: '#667eea' }} />
+              <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", margin: 0, fontSize: '1.5rem', fontWeight: 700 }}>BREW CRAFT EMPLOYEE</h2>
             </div>
           </div>
 
-          <div className="auth-form-container">
-            <h3 className="auth-title">
-              {isLogin ? 'Employee Portal Access' : 'Employee Registration'}
-            </h3>
-            <p className="auth-subtitle">
-              {isLogin 
-                ? 'Enter your employee code and password to access the management system'
-                : 'Register as a new employee with your assigned employee code'
-              }
-            </p>
+          <h3 style={{ 
+            fontFamily: "'Space Grotesk', sans-serif", 
+            fontSize: '2rem', 
+            fontWeight: 700, 
+            textAlign: 'center', 
+            marginBottom: '0.5rem' 
+          }}>
+            {isLogin ? 'Employee Portal Access' : 'Employee Registration'}
+          </h3>
+          
+          <p style={{ 
+            color: 'rgba(255, 255, 255, 0.8)', 
+            textAlign: 'center', 
+            marginBottom: '2rem', 
+            lineHeight: 1.5, 
+            fontSize: '0.95rem' 
+          }}>
+            {isLogin 
+              ? 'Enter your employee code and password to access the management system'
+              : 'Register as a new employee with your assigned employee code'
+            }
+          </p>
 
-            {/* Demo credentials info for testing */}
-            {isLogin && (
-              <div style={{
-                background: 'rgba(102, 126, 234, 0.1)',
-                border: '1px solid rgba(102, 126, 234, 0.3)',
-                borderRadius: '12px',
-                padding: '1rem',
-                marginBottom: '1.5rem',
-                fontSize: '0.85rem',
-                color: 'rgba(255, 255, 255, 0.8)'
-              }}>
-                <strong style={{color: '#667eea'}}>Demo Login Codes:</strong><br/>
-                EMP1001 / admin123 (Admin)<br/>
-                EMP1002 / manager456 (Manager)<br/>
-                EMP1003 / barista789 (Barista)
+          {isLogin && (
+            <div style={{
+              background: 'rgba(102, 126, 234, 0.1)',
+              border: '1px solid rgba(102, 126, 234, 0.3)',
+              borderRadius: '12px',
+              padding: '1rem',
+              marginBottom: '1.5rem',
+              fontSize: '0.85rem',
+              color: 'rgba(255, 255, 255, 0.8)'
+            }}>
+              <strong style={{color: '#667eea'}}>Demo Login Codes:</strong><br/>
+              EMP1001 / admin123 (Admin)<br/>
+              EMP1002 / manager456 (Manager)<br/>
+              EMP1003 / barista789 (Barista)
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div>
+              <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                Employee Code
+              </label>
+              <input
+                type="text"
+                name="employeeCode"
+                value={formData.employeeCode}
+                onChange={handleInputChange}
+                style={{
+                  width: '100%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  border: `1px solid ${errors.employeeCode ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                  borderRadius: '12px',
+                  padding: '1rem 1.2rem',
+                  color: 'white',
+                  fontSize: '1rem',
+                  backdropFilter: 'blur(20px)',
+                  boxSizing: 'border-box',
+                  textTransform: 'uppercase'
+                }}
+                placeholder="EMP1234"
+              />
+              {errors.employeeCode && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.employeeCode}</span>}
+              <small style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.8rem', marginTop: '0.25rem', fontStyle: 'italic', display: 'block' }}>
+                Format: EMP followed by 4 digits
+              </small>
+            </div>
+
+            <div>
+              <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  style={{
+                    width: '100%',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: `1px solid ${errors.password ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                    borderRadius: '12px',
+                    padding: '1rem 1.2rem',
+                    color: 'white',
+                    fontSize: '1rem',
+                    backdropFilter: 'blur(20px)',
+                    boxSizing: 'border-box',
+                    paddingRight: '3rem'
+                  }}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '1rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
+              {errors.password && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.password}</span>}
+            </div>
+
+            {!isLogin && (
+              <>
+                <div>
+                  <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    name="employeeName"
+                    value={formData.employeeName}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      border: `1px solid ${errors.employeeName ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                      borderRadius: '12px',
+                      padding: '1rem 1.2rem',
+                      color: 'white',
+                      fontSize: '1rem',
+                      backdropFilter: 'blur(20px)',
+                      boxSizing: 'border-box'
+                    }}
+                    placeholder="Enter your full name"
+                  />
+                  {errors.employeeName && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.employeeName}</span>}
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                    Personal Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      border: `1px solid ${errors.email ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                      borderRadius: '12px',
+                      padding: '1rem 1.2rem',
+                      color: 'white',
+                      fontSize: '1rem',
+                      backdropFilter: 'blur(20px)',
+                      boxSizing: 'border-box'
+                    }}
+                    placeholder="your.email@gmail.com"
+                  />
+                  {errors.email && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.email}</span>}
+                  <small style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.8rem', marginTop: '0.25rem', fontStyle: 'italic', display: 'block' }}>
+                    Use your personal email address
+                  </small>
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                    Department
+                  </label>
+                  <select
+                    name="department"
+                    value={formData.department}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      borderRadius: '12px',
+                      padding: '1rem 1.2rem',
+                      color: 'white',
+                      fontSize: '1rem',
+                      backdropFilter: 'blur(20px)',
+                      boxSizing: 'border-box',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value="cafe" style={{ background: 'rgba(26, 26, 46, 0.9)', color: 'white' }}>Café Operations</option>
+                    <option value="kitchen" style={{ background: 'rgba(26, 26, 46, 0.9)', color: 'white' }}>Kitchen</option>
+                    <option value="management" style={{ background: 'rgba(26, 26, 46, 0.9)', color: 'white' }}>Management</option>
+                    <option value="delivery" style={{ background: 'rgba(26, 26, 46, 0.9)', color: 'white' }}>Delivery</option>
+                    <option value="customer-service" style={{ background: 'rgba(26, 26, 46, 0.9)', color: 'white' }}>Customer Service</option>
+                    <option value="admin" style={{ background: 'rgba(26, 26, 46, 0.9)', color: 'white' }}>Administration</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      border: `1px solid ${errors.confirmPassword ? '#ff4757' : 'rgba(255, 255, 255, 0.2)'}`,
+                      borderRadius: '12px',
+                      padding: '1rem 1.2rem',
+                      color: 'white',
+                      fontSize: '1rem',
+                      backdropFilter: 'blur(20px)',
+                      boxSizing: 'border-box'
+                    }}
+                    placeholder="Confirm your password"
+                  />
+                  {errors.confirmPassword && <span style={{ color: '#ff4757', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>{errors.confirmPassword}</span>}
+                </div>
+              </>
             )}
 
-            <form onSubmit={handleSubmit} className="auth-form">
-              <div className="input-group">
-                <label htmlFor="employeeCode">Employee Code</label>
-                <input
-                  type="text"
-                  id="employeeCode"
-                  name="employeeCode"
-                  value={formData.employeeCode}
-                  onChange={handleInputChange}
-                  className={errors.employeeCode ? 'error' : ''}
-                  placeholder="EMP1234"
-                  style={{ textTransform: 'uppercase' }}
-                />
-                {errors.employeeCode && <span className="error-text">{errors.employeeCode}</span>}
-                <small className="input-hint">Format: EMP followed by 4 digits</small>
-              </div>
+            <button 
+              type="submit"
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '1.2rem',
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                fontFamily: "'Space Grotesk', sans-serif",
+                cursor: 'pointer',
+                marginTop: '1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                width: '100%'
+              }}
+            >
+              {isLogin ? 'Access Employee Portal' : 'Register as Employee'}
+            </button>
+          </form>
 
-              <div className="input-group">
-                <label htmlFor="password">Password</label>
-                <div className="password-input">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className={errors.password ? 'error' : ''}
-                    placeholder="Enter your password"
-                  />
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                {errors.password && <span className="error-text">{errors.password}</span>}
-              </div>
-
-              {!isLogin && (
-                <>
-                  <div className="input-group">
-                    <label htmlFor="employeeName">Full Name</label>
-                    <input
-                      type="text"
-                      id="employeeName"
-                      name="employeeName"
-                      value={formData.employeeName}
-                      onChange={handleInputChange}
-                      className={errors.employeeName ? 'error' : ''}
-                      placeholder="Enter your full name"
-                    />
-                    {errors.employeeName && <span className="error-text">{errors.employeeName}</span>}
-                  </div>
-
-                  <div className="input-group">
-                    <label htmlFor="email">Personal Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className={errors.email ? 'error' : ''}
-                      placeholder="your.email@gmail.com"
-                    />
-                    {errors.email && <span className="error-text">{errors.email}</span>}
-                    <small className="input-hint">Use your personal email address</small>
-                  </div>
-
-                  <div className="input-group">
-                    <label htmlFor="department">Department</label>
-                    <select
-                      id="department"
-                      name="department"
-                      value={formData.department}
-                      onChange={handleInputChange}
-                      className="employee-select"
-                    >
-                      <option value="cafe">Café Operations</option>
-                      <option value="kitchen">Kitchen</option>
-                      <option value="management">Management</option>
-                      <option value="delivery">Delivery</option>
-                      <option value="customer-service">Customer Service</option>
-                      <option value="admin">Administration</option>
-                    </select>
-                  </div>
-
-                  <div className="input-group">
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      className={errors.confirmPassword ? 'error' : ''}
-                      placeholder="Confirm your password"
-                    />
-                    {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
-                  </div>
-                </>
-              )}
-
-              <button type="submit" className="employee-submit-btn">
-                {isLogin ? 'Access Employee Portal' : 'Register as Employee'}
+          <div style={{ marginTop: '2rem', textAlign: 'center', paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <p style={{ color: 'rgba(255, 255, 255, 0.7)', margin: 0 }}>
+              {isLogin ? "New employee? " : "Already registered? "}
+              <button 
+                type="button" 
+                onClick={toggleMode}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#667eea',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                {isLogin ? 'Register Here' : 'Sign In'}
               </button>
-            </form>
-
-            <div className="auth-switch">
-              <p>
-                {isLogin ? "New employee? " : "Already registered? "}
-                <button type="button" className="switch-btn" onClick={toggleMode}>
-                  {isLogin ? 'Register Here' : 'Sign In'}
-                </button>
-              </p>
-            </div>
+            </p>
           </div>
         </div>
       </div>

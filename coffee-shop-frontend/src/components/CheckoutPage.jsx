@@ -8,36 +8,28 @@ const CheckoutPage = ({
   onOrderComplete,
   isUserLoggedIn 
 }) => {
-  const [step, setStep] = useState(1) // 1: Details, 2: Payment, 3: Confirmation
+  const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
-    // Contact Info
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    
-    // Delivery Address
     address: '',
     city: '',
     state: 'Uttar Pradesh',
     pincode: '',
     landmark: '',
-    
-    // Payment Info
     paymentMethod: 'card',
     cardNumber: '',
     expiryDate: '',
     cvv: '',
     cardName: '',
-    
-    // UPI Info
     upiId: '',
-    
-    // Order Notes
     orderNotes: ''
   })
   const [errors, setErrors] = useState({})
   const [isProcessing, setIsProcessing] = useState(false)
+  const [orderData, setOrderData] = useState(null)
 
   const deliveryFee = cartTotal > 0 ? 50 : 0
   const tax = cartTotal > 0 ? Math.round(cartTotal * 0.05) : 0
@@ -50,7 +42,6 @@ const CheckoutPage = ({
       [name]: value
     }))
     
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -141,24 +132,25 @@ const CheckoutPage = ({
   const processOrder = () => {
     setIsProcessing(true)
     
-    // Simulate payment processing
+    const orderId = `BC${Date.now().toString().slice(-6)}`
+    
+    const newOrderData = {
+      orderId,
+      items: cartItems,
+      subtotal: cartTotal,
+      deliveryFee: deliveryFee,
+      tax: tax,
+      total: finalTotal,
+      customerInfo: formData,
+      orderTime: new Date(),
+      estimatedDelivery: new Date(Date.now() + 45 * 60 * 1000),
+      status: 'confirmed'
+    }
+    
+    setOrderData(newOrderData)
+    
     setTimeout(() => {
       setIsProcessing(false)
-      // Generate order ID
-      const orderId = `BC${Date.now().toString().slice(-6)}`
-      
-      // Simulate successful order
-      const orderData = {
-        orderId,
-        items: cartItems,
-        total: finalTotal,
-        customerInfo: formData,
-        orderTime: new Date(),
-        estimatedDelivery: new Date(Date.now() + 45 * 60 * 1000), // 45 minutes from now
-        status: 'confirmed'
-      }
-      
-      onOrderComplete(orderData)
     }, 3000)
   }
 
@@ -179,7 +171,7 @@ const CheckoutPage = ({
 
   const handleCardNumberChange = (e) => {
     const formatted = formatCardNumber(e.target.value)
-    if (formatted.length <= 19) { // 16 digits + 3 spaces
+    if (formatted.length <= 19) {
       setFormData(prev => ({ ...prev, cardNumber: formatted }))
     }
   }
@@ -247,21 +239,27 @@ const CheckoutPage = ({
                     ))}
                   </div>
                   <div className="order-total-final">
-                    <strong>Total Paid: ₹{finalTotal.toLocaleString()}</strong>
+                    <strong>Total Paid: ₹{orderData ? orderData.total.toLocaleString() : finalTotal.toLocaleString()}</strong>
                   </div>
                 </div>
 
                 <button 
                   className="home-btn"
-                  onClick={() => onOrderComplete({
-                    orderId: `BC${Date.now().toString().slice(-6)}`,
-                    items: cartItems,
-                    total: finalTotal,
-                    customerInfo: formData,
-                    orderTime: new Date(),
-                    estimatedDelivery: new Date(Date.now() + 45 * 60 * 1000),
-                    status: 'confirmed'
-                  })}
+                  onClick={() => {
+                    const finalOrderData = orderData || {
+                      orderId: `BC${Date.now().toString().slice(-6)}`,
+                      items: cartItems,
+                      subtotal: cartTotal,
+                      deliveryFee: deliveryFee,
+                      tax: tax,
+                      total: finalTotal,
+                      customerInfo: formData,
+                      orderTime: new Date(),
+                      estimatedDelivery: new Date(Date.now() + 45 * 60 * 1000),
+                      status: 'confirmed'
+                    }
+                    onOrderComplete(finalOrderData)
+                  }}
                 >
                   Track Your Order
                 </button>
