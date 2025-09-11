@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { Plus, Minus } from 'lucide-react'
-
-const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity }) => {
-  const [visibleCards, setVisibleCards] = useState([])
-
-  const coffeeItems = [
+import React, { useState, useEffect } from "react";
+import { Plus, Minus } from "lucide-react";
+import axios from "axios";
+const MenuGrid = ({
+  onCoffeeClick,
+  onAddToCart,
+  cartItems,
+  onUpdateQuantity,
+}) => {
+  const [visibleCards, setVisibleCards] = useState([]);
+  const [coffeeItems, setcoffeeItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  /*const coffeeItems = [
     { 
       id: 1, 
       name: "Classic Espresso", 
@@ -68,115 +74,142 @@ const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity }) =
       price: "₹450", 
       emoji: "☕"
     }
-  ]
+  ]*/
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setVisibleCards(prev => {
-        if (prev.length < coffeeItems.length) {
-          return [...prev, prev.length]
-        }
-        clearInterval(timer)
-        return prev
+    axios
+      .get("/api/product")
+      .then((res) => {
+        console.log("getting the reposnse", res.data.products);
+        setcoffeeItems(res.data.products);
+        setLoading(false);
       })
-    }, 200)
+      .catch(function (error) {
+        console.log(error);
+        setLoading(false);
+      });
+  }, []);
+  useEffect(() => {
+    if (!coffeeItems || coffeeItems.length === 0) return; // ✅ guard
+    const timer = setInterval(() => {
+      setVisibleCards((prev) => {
+        if (prev.length < coffeeItems.length) {
+          return [...prev, prev.length];
+        }
+        clearInterval(timer);
+        return prev;
+      });
+    }, 200);
 
-    return () => clearInterval(timer)
-  }, [])
-
+    return () => clearInterval(timer);
+  }, [coffeeItems]);
   const handleCardClick = (coffeeName) => {
-    onCoffeeClick(`coffee-${coffeeName.replace(/\s+/g, '-').toLowerCase()}`)
-  }
+    onCoffeeClick(`coffee-${coffeeName.replace(/\s+/g, "-").toLowerCase()}`);
+  };
 
   const handleLearnMore = (e, coffeeName) => {
-    e.stopPropagation()
-    onCoffeeClick(`coffee-${coffeeName.replace(/\s+/g, '-').toLowerCase()}`)
-  }
+    e.stopPropagation();
+    onCoffeeClick(`coffee-${coffeeName.replace(/\s+/g, "-").toLowerCase()}`);
+  };
 
   const handleAddToCart = (e, item) => {
-    e.stopPropagation()
-    onAddToCart(item)
-  }
+    e.stopPropagation();
+    onAddToCart(item);
+  };
 
   const handleQuantityChange = (e, itemId, change) => {
-    e.stopPropagation()
-    onUpdateQuantity(itemId, change)
-  }
+    e.stopPropagation();
+    onUpdateQuantity(itemId, change);
+  };
 
   const getItemQuantity = (itemId) => {
-    const cartItem = cartItems.find(item => item.id === itemId)
-    return cartItem ? cartItem.quantity : 0
-  }
+    const cartItem = cartItems.find((item) => item._id === itemId);
+    return cartItem ? cartItem.quantity : 0;
+  };
 
   return (
     <section className="menu-section" id="menu">
       <h2 className="section-title slide-in-bottom">Our Coffee Collection</h2>
-      <p className="section-subtitle slide-in-bottom" style={{animationDelay: '0.2s'}}>
-        Expertly crafted coffee drinks, made fresh daily with premium ingredients 
-        sourced from the world's finest coffee growing regions
+      <p
+        className="section-subtitle slide-in-bottom"
+        style={{ animationDelay: "0.2s" }}
+      >
+        Expertly crafted coffee drinks, made fresh daily with premium
+        ingredients sourced from the world's finest coffee growing regions
       </p>
-      
+
       <div className="menu-grid">
-        {coffeeItems.map((item, index) => {
-          const quantity = getItemQuantity(item.id)
-          
-          return (
-            <div 
-              key={item.id} 
-              className={`coffee-card ${visibleCards.includes(index) ? 'slide-in-bottom' : ''}`}
-              style={{
-                opacity: visibleCards.includes(index) ? 1 : 0,
-                animationDelay: `${index * 0.15}s`
-              }}
-              onClick={() => handleCardClick(item.name)}
-            >
-              <div className="coffee-image">
-                <span className="coffee-emoji">{item.emoji}</span>
-              </div>
-              <div className="coffee-info">
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
-                <div className="price">{item.price}</div>
-                <div className="card-buttons">
-                  <button 
-                    className="learn-more-btn" 
-                    onClick={(e) => handleLearnMore(e, item.name)}
-                  >
-                    <span>Learn More</span>
-                  </button>
-                  
-                  {quantity === 0 ? (
-                    <button 
-                      className="order-now-btn" 
-                      onClick={(e) => handleAddToCart(e, item)}
+        {loading ? (
+          <div className="loading">
+            <div className="spinner"></div>
+            <p>Loading coffees...</p>//TODO:WE need to add a loader animation here 
+          </div>
+        ) : coffeeItems.length === 0 ? (
+          <p>No coffee items available.</p>
+        ) : (
+          coffeeItems.map((item, index) => {
+            const quantity = getItemQuantity(item._id);
+
+            return (
+              <div
+                key={item._id}
+                className={`coffee-card ${
+                  visibleCards.includes(index) ? "slide-in-bottom" : ""
+                }`}
+                style={{
+                  opacity: visibleCards.includes(index) ? 1 : 0,
+                  animationDelay: `${index * 0.15}s`,
+                }}
+                onClick={() => handleCardClick(item.name)}
+              >
+                <div  className="coffee-image w-full h-44 flex items-center justify-center overflow-hidden rounded-xl bg-gray-100">
+                  <img src={`/api${item.imageUrl}`} alt={item.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="coffee-info">
+                  <h3>{item.name}</h3>
+                  <p>{item.description}</p>
+                  <div className="price">{`₹${item.price}`}</div>
+                  <div className="card-buttons">
+                    <button
+                      className="learn-more-btn"
+                      onClick={(e) => handleLearnMore(e, item.name)}
                     >
-                      <span>Order Now</span>
+                      <span>Learn More</span>
                     </button>
-                  ) : (
-                    <div className="quantity-controls">
-                      <button 
-                        className="quantity-btn minus"
-                        onClick={(e) => handleQuantityChange(e, item.id, -1)}
+
+                    {quantity === 0 ? (
+                      <button
+                        className="order-now-btn"
+                        onClick={(e) => handleAddToCart(e, item)}
                       >
-                        <Minus size={16} />
+                        <span>Order Now</span>
                       </button>
-                      <span className="quantity-display">{quantity}</span>
-                      <button 
-                        className="quantity-btn plus"
-                        onClick={(e) => handleQuantityChange(e, item.id, 1)}
-                      >
-                        <Plus size={16} />
-                      </button>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="quantity-controls">
+                        <button
+                          className="quantity-btn minus"
+                          onClick={(e) => handleQuantityChange(e, item._id, -1)}
+                        >
+                          <Minus size={16} />
+                        </button>
+                        <span className="quantity-display">{quantity}</span>
+                        <button
+                          className="quantity-btn plus"
+                          onClick={(e) => handleQuantityChange(e, item._id, 1)}
+                        >
+                          <Plus size={16} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            );
+          })
+        )}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default MenuGrid
+export default MenuGrid;
