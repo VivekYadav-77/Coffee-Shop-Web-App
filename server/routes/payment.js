@@ -1,47 +1,62 @@
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 const { body } = require('express-validator');
 const { authenticateToken, handleValidationErrors, requireAdmin } = require('../middleware/auth');
-const { orders } = require('../routes/orders'); // import the same orders map you use
+const { orders } = require('../routes/orders'); // same orders map you use
 
 const router = express.Router();
 
-// Create payment intent
-router.post('/create-intent', authenticateToken, [
-  body('amount').isFloat({ min: 0.5 }).withMessage('Amount must be a positive number'),
-  body('currency').isIn(['usd', 'eur', 'gbp']).withMessage('Invalid currency'),
+// Razorpay instance
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// Create Razorpay order
+router.post('/create-order', authenticateToken, [
+  body('amount').isFloat({ min: 0.5 }).withMessage('Amount must be positive'),
+  body('currency').isIn(['INR']).withMessage('Only INR supported for now'),
   body('orderId').notEmpty().withMessage('Order ID is required')
 ], handleValidationErrors, async (req, res) => {
   try {
-    const { amount, currency = 'usd', orderId } = req.body;
+    const { amount, currency = 'INR', orderId } = req.body;
 
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
+    const options = {
+      amount: Math.round(amount * 100), // in paise
       currency,
-      metadata: { orderId, userId: req.user.id },
-      automatic_payment_methods: { enabled: true }
-    });
+      receipt: orderId,
+      notes: { userId: req.user.id }
+    };
+
+    const order = await razorpay.orders.create(options);
 
     res.json({
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency
     });
   } catch (error) {
-    console.error('Payment intent creation error:', error);
-    res.status(500).json({ message: 'Failed to create payment intent', error: error.message });
+    console.error('Razorpay order creation error:', error);
+    res.status(500).json({ message: 'Failed to create order', error: error.message });
   }
 });
 
-// Confirm payment
+// Confirm payment (signature verification)
 router.post('/confirm', authenticateToken, [
-  body('paymentIntentId').notEmpty().withMessage('Payment intent ID is required'),
+  body('razorpay_order_id').notEmpty().withMessage('Razorpay order ID is required'),
+  body('razorpay_payment_id').notEmpty().withMessage('Payment ID is required'),
+  body('razorpay_signature').notEmpty().withMessage('Signature is required'),
   body('orderId').notEmpty().withMessage('Order ID is required')
 ], handleValidationErrors, async (req, res) => {
   try {
-    const { paymentIntentId, orderId } = req.body;
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
 
-    if (paymentIntent.status === 'succeeded') {
+    const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
+    hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+    const generatedSignature = hmac.digest('hex');
+
+    if (generatedSignature === razorpay_signature) {
       const order = orders.get(orderId);
       if (order) {
         order.paymentStatus = 'completed';
@@ -52,32 +67,36 @@ router.post('/confirm', authenticateToken, [
       res.json({
         message: 'Payment confirmed successfully',
         paymentStatus: 'completed',
-        transactionId: paymentIntent.id
+        transactionId: razorpay_payment_id
       });
     } else {
-      res.status(400).json({ message: 'Payment not completed', paymentStatus: paymentIntent.status });
+      res.status(400).json({ message: 'Invalid payment signature' });
     }
   } catch (error) {
-    console.error('Payment confirmation error:', error);
+    console.error('Razorpay payment confirmation error:', error);
     res.status(500).json({ message: 'Failed to confirm payment', error: error.message });
   }
 });
 
-// Webhook for Stripe
-router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
+// Webhook for Razorpay (optional)
+router.post('/webhook', express.json({ type: 'application/json' }), (req, res) => {
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+  const signature = req.headers['x-razorpay-signature'];
 
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-  } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+  const shasum = crypto.createHmac('sha256', secret);
+  shasum.update(JSON.stringify(req.body));
+  const digest = shasum.digest('hex');
+
+  if (digest !== signature) {
+    console.error('Invalid Razorpay webhook signature');
+    return res.status(400).send('Invalid signature');
   }
 
-  if (event.type === 'payment_intent.succeeded') {
-    const paymentIntent = event.data.object;
-    const orderId = paymentIntent.metadata.orderId;
+  const event = req.body.event;
+  const payload = req.body.payload.payment ? req.body.payload.payment.entity : null;
+
+  if (event === 'payment.captured' && payload) {
+    const orderId = payload.notes?.orderId;
     const order = orders.get(orderId);
     if (order) {
       order.paymentStatus = 'completed';
@@ -87,9 +106,8 @@ router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) =>
     }
   }
 
-  if (event.type === 'payment_intent.payment_failed') {
-    const paymentIntent = event.data.object;
-    const orderId = paymentIntent.metadata.orderId;
+  if (event === 'payment.failed' && payload) {
+    const orderId = payload.notes?.orderId;
     const order = orders.get(orderId);
     if (order) {
       order.paymentStatus = 'failed';
@@ -103,14 +121,13 @@ router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) =>
 
 // Refund payment
 router.post('/refund', authenticateToken, requireAdmin, [
-  body('paymentIntentId').notEmpty().withMessage('Payment intent ID is required'),
+  body('paymentId').notEmpty().withMessage('Payment ID is required'),
   body('amount').optional().isFloat({ min: 0.5 }).withMessage('Refund amount must be positive')
 ], handleValidationErrors, async (req, res) => {
   try {
-    const { paymentIntentId, amount } = req.body;
+    const { paymentId, amount } = req.body;
 
-    const refund = await stripe.refunds.create({
-      payment_intent: paymentIntentId,
+    const refund = await razorpay.payments.refund(paymentId, {
       amount: amount ? Math.round(amount * 100) : undefined
     });
 
@@ -123,7 +140,7 @@ router.post('/refund', authenticateToken, requireAdmin, [
       }
     });
   } catch (error) {
-    console.error('Refund error:', error);
+    console.error('Razorpay refund error:', error);
     res.status(500).json({ message: 'Failed to process refund', error: error.message });
   }
 });
