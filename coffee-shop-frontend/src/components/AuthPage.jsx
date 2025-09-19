@@ -9,7 +9,6 @@ const AuthPage = ({ onLogin, from }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("form data",e.target.value)
     // Simulate successful login/signup
     setTimeout(() => {
       onLogin({ email, name: isLogin ? 'User' : name })

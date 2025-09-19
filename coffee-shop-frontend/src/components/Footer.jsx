@@ -1,10 +1,37 @@
-import React from 'react'
-import { UserCheck } from 'lucide-react'
+import React, { useState } from 'react'
+import { UserCheck, Check } from 'lucide-react'
 
-const Footer = ({ onEmployeeAuth, onEmployeeAuthRequired }) => {
+const Footer = ({ onEmployeeAuth, onEmployeeAuthRequired, isEmployeeLoggedIn, onNavigate }) => {
+  const [emailCopied, setEmailCopied] = useState(false)
+
   const handleLinkClick = (e, pageName) => {
     e.preventDefault()
-    alert(`${pageName} page will be added soon!`)
+    if (pageName === 'Learn about the team') {
+      onNavigate('team')
+    } else if (pageName === 'Contact us') {
+      handleEmailCopy()
+    } else {
+      alert(`${pageName} page will be added soon!`)
+    }
+  }
+
+  const handleEmailCopy = async () => {
+    const emails = 'brewcraft2025@outlook.com, akshat1972005@gmail.com'
+    try {
+      await navigator.clipboard.writeText(emails)
+      setEmailCopied(true)
+      setTimeout(() => setEmailCopied(false), 3000) // Hide after 3 seconds
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea')
+      textArea.value = emails
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      setEmailCopied(true)
+      setTimeout(() => setEmailCopied(false), 3000)
+    }
   }
 
   const handleEmployeeDashboardClick = (e) => {
@@ -52,59 +79,51 @@ const Footer = ({ onEmployeeAuth, onEmployeeAuthRequired }) => {
           </ul>
         </div>
         
-        <div className="footer-section">
-          <h3>For Employees</h3>
-          <ul>
-            <li>
-              <a 
-                href="#dashboard" 
-                onClick={handleEmployeeDashboardClick}
-              >
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a 
-                href="#menu-management" 
-                onClick={handleMenuManagementClick}
-              >
-                Menu management
-              </a>
-            </li>
-            <li>
-              <a 
-                href="#order-management" 
-                onClick={handleOrderManagementClick}
-              >
-                Order management
-              </a>
-            </li>
-            <li>
-              <a 
-                href="#analytics" 
-                onClick={handleAnalyticsClick}
-              >
-                Analytics
-              </a>
-            </li>
-          </ul>
-          
-          {/* Employee Auth Button */}
-          <div className="business-auth-section">
-            <button 
-              className="business-auth-btn" 
-              onClick={onEmployeeAuth}
-            >
-              <UserCheck size={18} />
-              <span>Employee Login</span>
-            </button>
+        {isEmployeeLoggedIn && (
+          <div className="footer-section">
+            <h3>For Employees</h3>
+            <ul>
+              <li>
+                <a 
+                  href="#menu-management" 
+                  onClick={handleMenuManagementClick}
+                >
+                  Menu management
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#order-management" 
+                  onClick={handleOrderManagementClick}
+                >
+                  Order management
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#analytics" 
+                  onClick={handleAnalyticsClick}
+                >
+                  Analytics
+                </a>
+              </li>
+            </ul>
           </div>
-        </div>
+        )}
+        
       </div>
       
       <div className="footer-bottom">
         <p>&copy; 2025 BREW CRAFT Coffee. All rights reserved. Crafted with ❤️ for coffee lovers worldwide.</p>
       </div>
+      
+      {/* Email Copied Indicator */}
+      {emailCopied && (
+        <div className="email-copied-indicator">
+          <Check size={20} />
+          <span>Emails copied to clipboard!</span>
+        </div>
+      )}
     </footer>
   )
 }

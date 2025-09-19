@@ -8,6 +8,19 @@ import EmployeeAuth from './components/EmployeeAuth'
 import CartPage from './components/CartPage'
 import CheckoutPage from './components/CheckoutPage'
 import OrderTrackingPage from './components/OrderTrackingPage'
+import ClassicEspresso from './components/coffee/ClassicEspresso'
+import SmoothAmericano from './components/coffee/SmoothAmericano'
+import CreamyLatte from './components/coffee/CreamyLatte'
+import FrothyCappuccino from './components/coffee/FrothyCappuccino'
+import DecadentMocha from './components/coffee/DecadentMocha'
+import ElegantMacchiato from './components/coffee/ElegantMacchiato'
+import ColdBrew from './components/coffee/ColdBrew'
+import IcedFrappe from './components/coffee/IcedFrappe'
+import FlatWhite from './components/coffee/FlatWhite'
+import MenuManagement from './components/employee/MenuManagement'
+import OrderManagement from './components/employee/OrderManagement'
+import AnalyticsPage from './components/employee/Analytics'
+import TeamPage from './components/TeamPage'
 import './App.css'
 
 function App() {
@@ -128,6 +141,12 @@ function App() {
       return
     }
 
+    // Handle coffee detail pages (no auth required)
+    if (destination && destination.startsWith('coffee-')) {
+      setCurrentPage(destination)
+      return
+    }
+
     if (isUserLoggedIn) {
       // User is logged in, proceed to destination
       if (destination === 'cart') {
@@ -140,7 +159,7 @@ function App() {
         } else {
           alert('No active order to track. Place an order first!')
         }
-      } else {
+      } else if (destination) {
         alert(`Going to ${destination} page (will be added later)`)
       }
     } else {
@@ -153,7 +172,7 @@ function App() {
   const handleEmployeeAuthRequiredAction = (destination) => {
     if (isEmployeeLoggedIn) {
       // Employee is logged in, proceed to destination
-      alert(`Going to ${destination} page (will be added later)`)
+      setCurrentPage(destination)
     } else {
       // Employee not logged in, show employee auth
       alert('Please sign in as an employee to access this feature')
@@ -167,16 +186,17 @@ function App() {
       
       if (existingItem) {
         // Item exists, increase quantity
+        const newQty = Math.min(10, existingItem.quantity + 1)
+        if (newQty === existingItem.quantity) {
+          alert('Maximum 10 items allowed per coffee.')
+          return prevItems
+        }
         const updatedItems = prevItems.map(cartItem =>
           cartItem.id === item.id 
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            ? { ...cartItem, quantity: newQty }
             : cartItem
         )
-        
-        // Trigger cart animation
-        const newQuantity = existingItem.quantity + 1
-        triggerCartAnimation(newQuantity)
-        
+        triggerCartAnimation(newQty)
         return updatedItems
       } else {
         // New item, add with quantity 1
@@ -194,7 +214,10 @@ function App() {
     setCartItems(prevItems => {
       return prevItems.map(item => {
         if (item.id === itemId) {
-          const newQuantity = Math.max(0, item.quantity + change)
+          const newQuantity = Math.max(0, Math.min(10, item.quantity + change))
+          if (item.quantity === 10 && change > 0) {
+            alert('Maximum 10 items allowed per coffee.')
+          }
           return { ...item, quantity: newQuantity }
         }
         return item
@@ -232,10 +255,15 @@ function App() {
     if (userData.type === 'employee') {
       setIsEmployeeLoggedIn(true)
       localStorage.setItem('brewCraftEmployee', JSON.stringify(userData))
-      alert('Employee login successful! Employee dashboard will be added later.')
+      // clear any user session when logging in as employee
+      setIsUserLoggedIn(false)
+      localStorage.removeItem('brewCraftUser')
     } else {
       setIsUserLoggedIn(true)
       localStorage.setItem('brewCraftUser', JSON.stringify(userData))
+      // clear any employee session when logging in as user
+      setIsEmployeeLoggedIn(false)
+      localStorage.removeItem('brewCraftEmployee')
       
       // If there's a pending destination, go there
       if (pendingDestination) {
@@ -249,8 +277,6 @@ function App() {
           } else {
             alert('No active order to track.')
           }
-        } else {
-          alert(`Login successful! Going to ${pendingDestination} page (will be added later)`)
         }
         setPendingDestination(null)
       }
@@ -260,7 +286,9 @@ function App() {
 
   const handleUserLogout = () => {
     setIsUserLoggedIn(false)
+    setIsEmployeeLoggedIn(false)
     localStorage.removeItem('brewCraftUser')
+    localStorage.removeItem('brewCraftEmployee')
     // Keep cart items when logging out
     setCurrentPage('home')
   }
@@ -288,6 +316,114 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'coffee-classic-espresso': {
+        const existing = cartItems.find(ci => ci.id === 1)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <ClassicEspresso
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-smooth-americano': {
+        const existing = cartItems.find(ci => ci.id === 2)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <SmoothAmericano
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-creamy-latte': {
+        const existing = cartItems.find(ci => ci.id === 3)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <CreamyLatte
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-frothy-cappuccino': {
+        const existing = cartItems.find(ci => ci.id === 4)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <FrothyCappuccino
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-decadent-mocha': {
+        const existing = cartItems.find(ci => ci.id === 5)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <DecadentMocha
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-elegant-macchiato': {
+        const existing = cartItems.find(ci => ci.id === 6)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <ElegantMacchiato
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-cold-brew': {
+        const existing = cartItems.find(ci => ci.id === 7)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <ColdBrew
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-iced-frappé': {
+        const existing = cartItems.find(ci => ci.id === 8)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <IcedFrappe
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
+      case 'coffee-flat-white': {
+        const existing = cartItems.find(ci => ci.id === 9)
+        const qty = existing ? existing.quantity : 0
+        return (
+          <FlatWhite
+            onBack={() => setCurrentPage('home')}
+            onAddToCart={addToCart}
+            onUpdateQuantity={updateCartQuantity}
+            currentQuantity={qty}
+          />
+        )
+      }
       case 'auth':
         return (
           <UserAuth 
@@ -300,7 +436,7 @@ function App() {
         )
       case 'employeeAuth':
         return (
-          <EmployeeAuth 
+          <UserAuth 
             onLogin={handleUserLogin}
             onCancel={() => setCurrentPage('home')}
           />
@@ -335,6 +471,22 @@ function App() {
             orderData={currentOrder}
           />
         )
+      case 'menu-management':
+        return (
+          <MenuManagement onBack={() => setCurrentPage('home')} />
+        )
+      case 'order-management':
+        return (
+          <OrderManagement onBack={() => setCurrentPage('home')} />
+        )
+      case 'analytics':
+        return (
+          <AnalyticsPage onBack={() => setCurrentPage('home')} />
+        )
+      case 'team':
+        return (
+          <TeamPage onBack={() => setCurrentPage('home')} />
+        )
       case 'home':
       default:
         return (
@@ -352,6 +504,8 @@ function App() {
             <Footer 
               onEmployeeAuth={handleEmployeeAuth} 
               onEmployeeAuthRequired={handleEmployeeAuthRequiredAction}
+              isEmployeeLoggedIn={isEmployeeLoggedIn}
+              onNavigate={handleNavigation}
             />
           </>
         )
@@ -362,7 +516,7 @@ function App() {
     <div className="App">
       <Header 
         onNavigate={handleNavigation}
-        isUserLoggedIn={isUserLoggedIn}
+        isUserLoggedIn={isUserLoggedIn || isEmployeeLoggedIn}
         onLogout={handleUserLogout}
         onAuthRequired={handleAuthRequiredAction}
         cartItemCount={getCartItemCount()}

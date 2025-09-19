@@ -1,0 +1,21 @@
+.coffee-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.coffee-image {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.coffee-card {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+

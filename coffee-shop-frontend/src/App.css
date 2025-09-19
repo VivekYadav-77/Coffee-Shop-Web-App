@@ -477,27 +477,19 @@
 }
 
 .coffee-image {
-   width: 100%;
-  height: 200px;          /* adjust to the height you want */
-  border-radius: 12px;    /* optional: rounded corners */
-  overflow: hidden;  
+  height: 200px;
   background: linear-gradient(135deg, 
     rgba(139, 69, 19, 0.08) 0%, 
     rgba(160, 82, 45, 0.06) 50%,
     rgba(210, 180, 140, 0.04) 100%
   );
-/*  display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;*/
+  overflow: hidden;
 }
-.coffee-image img {
-   width: 100%;
-  height: 100%;
-  object-fit: cover;      /* fill box & crop overflow */
-  display: block;
-}
+
 .coffee-image::after {
   content: '';
   position: absolute;
@@ -720,6 +712,55 @@
   padding-top: 2rem;
   text-align: center;
   color: rgba(255, 255, 255, 0.6);
+}
+
+/* Email Copied Indicator */
+.email-copied-indicator {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: rgba(34, 197, 94, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+  z-index: 10001;
+  animation: slideInFromRight 0.4s ease-out;
+}
+
+.email-copied-indicator svg {
+  color: white;
+  animation: checkPulse 0.6s ease-out;
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes checkPulse {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Employee Auth Button in Footer */
