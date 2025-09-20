@@ -115,6 +115,7 @@ const CheckoutPage = ({
   const handleNext = () => {
     if (step === 1 && validateStep1()) {
       setStep(2)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } else if (step === 2 && validateStep2()) {
       setStep(3)
       processOrder()
@@ -124,6 +125,7 @@ const CheckoutPage = ({
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       onBackToCart()
     }

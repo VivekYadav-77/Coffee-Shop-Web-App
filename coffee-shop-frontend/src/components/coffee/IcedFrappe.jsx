@@ -22,7 +22,15 @@ const IcedFrappe = ({ onBack, onAddToCart, onUpdateQuantity, currentQuantity }) 
         <div className="coffee-detail-content">
           <div className="coffee-visual">
             <div className="coffee-image-frame">
-              <img className="coffee-image-placeholder" src={item.imageUrl} alt={`${item.name} image`} />
+              <img 
+                className="coffee-image-placeholder" 
+                src={item.imageUrl} 
+                alt={`${item.name} image`}
+                loading="lazy"
+                decoding="async"
+                width="520"
+                height="520"
+              />
             </div>
           </div>
           <div className="coffee-info-card">

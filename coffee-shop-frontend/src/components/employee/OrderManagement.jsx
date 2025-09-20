@@ -19,9 +19,6 @@ const OrderManagement = ({ onBack }) => {
                 <strong>Order {o.orderId}</strong>
                 <span className="muted">Items: {o.items?.reduce((t,i)=>t+i.quantity,0)} • Total: ₹{o.total?.toLocaleString()}</span>
               </div>
-              <div className="emp-row-actions">
-                <span className="badge">{o.status || 'confirmed'}</span>
-              </div>
             </div>
           ))}
           {orders.length === 0 && <div className="muted">No orders yet.</div>}

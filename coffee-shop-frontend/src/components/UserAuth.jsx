@@ -141,20 +141,10 @@ const UserAuth = ({ onLogin, onCancel }) => {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      paddingTop: '120px',
-      paddingBottom: '2rem',
-      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #764ba2 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '120px 1rem 2rem'
+    <div className="auth-container" style={{
+      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #764ba2 100%)'
     }}>
-      <div style={{
-        display: 'flex',
-        maxWidth: '900px',
-        width: '100%',
+      <div className="auth-card" style={{
         background: 'rgba(26, 26, 46, 0.2)',
         backdropFilter: 'blur(30px)',
         border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -162,8 +152,8 @@ const UserAuth = ({ onLogin, onCancel }) => {
         overflow: 'hidden',
         boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)'
       }}>
-        <div style={{ padding: '3rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', color: 'white' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+        <div className="auth-content" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', color: 'white' }}>
+          <div className="auth-header" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <button 
               onClick={onCancel}
               style={{
@@ -186,7 +176,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
             </div>
           </div>
 
-          <h3 style={{ 
+          <h3 className="auth-title" style={{ 
             fontFamily: "'Space Grotesk', sans-serif", 
             fontSize: '2rem', 
             fontWeight: 700, 
@@ -196,7 +186,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
             {isLogin ? 'Welcome Back!' : 'Join Our Coffee Community'}
           </h3>
           
-          <p style={{ 
+          <p className="auth-subtitle" style={{ 
             color: 'rgba(255, 255, 255, 0.8)', 
             textAlign: 'center', 
             marginBottom: '2rem', 
@@ -237,7 +227,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <form className="auth-form" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {!isLogin && (
               <div>
                 <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>
@@ -248,6 +238,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
+                  className="auth-input"
                   style={{
                     width: '100%',
                     background: 'rgba(255, 255, 255, 0.1)',
@@ -274,6 +265,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
+                className="auth-input"
                 style={{
                   width: '100%',
                   background: 'rgba(255, 255, 255, 0.1)',
@@ -300,6 +292,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
+                  className="auth-input"
                   style={{
                     width: '100%',
                     background: 'rgba(255, 255, 255, 0.1)',
@@ -363,6 +356,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
 
             <button 
               type="submit"
+              className="auth-button"
               style={{
                 background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e3c 100%)',
                 color: 'white',
@@ -389,6 +383,7 @@ const UserAuth = ({ onLogin, onCancel }) => {
               <button 
                 type="button" 
                 onClick={toggleMode}
+                className="auth-toggle"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -404,7 +399,8 @@ const UserAuth = ({ onLogin, onCancel }) => {
           </div>
         </div>
 
-        <div style={{
+        {/* Coffee emoji - desktop only */}
+        <div className="coffee-visual-desktop" style={{
           flex: 1,
           background: 'rgba(139, 69, 19, 0.1)',
           display: 'flex',

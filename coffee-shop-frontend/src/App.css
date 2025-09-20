@@ -2306,17 +2306,7 @@
   overflow: hidden;
 }
 
-.auth-container {
-  display: flex;
-  max-width: 900px;
-  width: 100%;
-  background: rgba(26, 26, 46, 0.2);
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-}
+/* Removed conflicting auth-container rule - using new responsive rules below */
 
 .auth-form-wrapper {
   padding: 3rem;
@@ -2632,6 +2622,26 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .header .container {
+    padding: 0 1.5rem;
+  }
+  
+  .hero-title {
+    font-size: 4.5rem;
+  }
+  
+  .menu-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .coffee-detail-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .hero-title {
     font-size: 4rem;
@@ -2671,9 +2681,26 @@
   .cart-summary-card, .checkout-summary-card {
     position: static;
   }
+  
+  .coffee-detail-container {
+    padding: 0 1.5rem;
+  }
+  
+  .coffee-detail-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .coffee-info-card {
+    padding: 2rem;
+  }
 }
 
 @media (max-width: 768px) {
+  .header .container {
+    padding: 0 1rem;
+  }
+  
   .nav {
     position: fixed;
     top: 0;
@@ -2698,28 +2725,58 @@
     text-align: center;
     justify-content: center;
     margin-bottom: 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
   }
   
   .menu-toggle {
     display: flex;
   }
   
+  .hero {
+    padding: 0 1rem;
+    min-height: 90vh;
+  }
+  
   .hero-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
   }
   
   .hero-buttons {
     flex-direction: column;
     gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .cta-button {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
   }
   
   .section-title {
     font-size: 2.5rem;
   }
   
+  .menu-section {
+    padding: 4rem 1rem;
+  }
+  
   .menu-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+  
+  .coffee-card {
+    margin: 0 auto;
+    max-width: 400px;
   }
   
   .card-buttons {
@@ -2733,9 +2790,7 @@
     text-align: center;
   }
 
-  .auth-container {
-    flex-direction: column;
-  }
+  /* Removed conflicting auth-container rule */
 
   .auth-form-wrapper {
     padding: 2rem;
@@ -2745,10 +2800,19 @@
     display: none;
   }
   
+  .cart-page, .checkout-page, .tracking-page {
+    padding-top: 100px;
+  }
+  
+  .cart-container, .checkout-container, .tracking-container {
+    padding: 0 1rem;
+  }
+  
   .cart-item {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+    padding: 1.2rem;
   }
   
   .cart-item-details {
@@ -2766,6 +2830,7 @@
   .cart-header {
     justify-content: center;
     position: relative;
+    margin-bottom: 2rem;
   }
   
   .cart-title {
@@ -2789,6 +2854,7 @@
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+    margin-bottom: 2rem;
   }
   
   .checkout-title, .tracking-title {
@@ -2807,6 +2873,16 @@
   
   .payment-options {
     grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  
+  .payment-option {
+    padding: 1rem;
+    gap: 0.6rem;
+  }
+  
+  .payment-option span {
+    font-size: 0.85rem;
   }
   
   .cod-info {
@@ -2834,6 +2910,48 @@
     text-align: center;
   }
 
+  /* Coffee detail page mobile improvements */
+  .coffee-detail-page {
+    padding-top: 100px;
+  }
+  
+  .coffee-detail-container {
+    padding: 0 1rem;
+  }
+  
+  .coffee-detail-title {
+    font-size: 2.5rem;
+  }
+  
+  .coffee-detail-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .coffee-visual {
+    padding: 2rem;
+  }
+  
+  .coffee-info-card {
+    padding: 2rem;
+  }
+  
+  .coffee-meta {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .coffee-purchase {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .coffee-price {
+    text-align: center;
+    font-size: 1.8rem;
+  }
+
   /* Reduce floating coffee on mobile for performance */
   .App::after {
     content: '☕ ☕ ☕ ☕ ☕ ☕';
@@ -2843,17 +2961,34 @@
 }
 
 @media (max-width: 480px) {
+  .header .container {
+    padding: 0 0.5rem;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  .hero {
+    padding: 0 0.5rem;
+    min-height: 85vh;
+  }
+  
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+    line-height: 1.1;
   }
   
   .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 0.95rem;
+    margin-bottom: 1.2rem;
   }
   
   .cta-button {
-    padding: 1rem 2rem;
-    font-size: 1rem;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 280px;
   }
   
   .section-title {
@@ -2861,11 +2996,40 @@
   }
   
   .menu-section {
-    padding: 5rem 1rem;
+    padding: 3rem 0.5rem;
+  }
+  
+  .menu-grid {
+    gap: 1rem;
+  }
+  
+  .coffee-card {
+    margin: 0;
+    max-width: none;
   }
   
   .coffee-info {
-    padding: 1.2rem;
+    padding: 1rem;
+  }
+  
+  .coffee-info h3 {
+    font-size: 1.1rem;
+  }
+  
+  .coffee-info p {
+    font-size: 0.8rem;
+  }
+  
+  .price {
+    font-size: 1.1rem;
+  }
+
+  .cart-page, .checkout-page, .tracking-page {
+    padding-top: 90px;
+  }
+  
+  .cart-container, .checkout-container, .tracking-container {
+    padding: 0 0.5rem;
   }
 
   .cart-title, .checkout-title, .tracking-title {
@@ -2873,13 +3037,28 @@
   }
   
   .cart-item {
-    padding: 1.2rem;
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+  
+  .cart-item-image {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .cart-item-emoji {
+    font-size: 2rem;
+  }
+  
+  .cart-item-name {
+    font-size: 1.1rem;
   }
   
   .cart-item-description {
     white-space: normal;
     overflow: visible;
     text-overflow: initial;
+    font-size: 0.85rem;
   }
   
   .cart-summary-card, .checkout-summary-card {
@@ -2894,8 +3073,17 @@
     font-size: 1.5rem;
   }
   
+  .payment-option {
+    padding: 0.8rem;
+    gap: 0.5rem;
+  }
+  
+  .payment-option span {
+    font-size: 0.8rem;
+  }
+  
   .confirmation-content {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   .timeline-header h2 {
@@ -2905,11 +3093,272 @@
   .delivery-map iframe {
     height: 250px;
   }
+  
+  /* Coffee detail page for small screens */
+  .coffee-detail-page {
+    padding-top: 90px;
+  }
+  
+  .coffee-detail-container {
+    padding: 0 0.5rem;
+  }
+  
+  .coffee-detail-title {
+    font-size: 2rem;
+  }
+  
+  .coffee-visual {
+    padding: 1.5rem;
+  }
+  
+  .coffee-info-card {
+    padding: 1.5rem;
+  }
+  
+  .coffee-info-card h2 {
+    font-size: 1.5rem;
+  }
+  
+  .coffee-info-card p {
+    font-size: 0.95rem;
+  }
+  
+  .meta-item {
+    padding: 0.8rem 1rem;
+  }
+  
+  .coffee-price {
+    font-size: 1.6rem;
+  }
+  
+  .quantity-controls {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .order-now-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  /* Auth page mobile improvements */
+  /* Removed conflicting auth-container rule */
+  
+  .auth-form-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .auth-title {
+    font-size: 2rem;
+  }
+  
+  .auth-subtitle {
+    font-size: 1rem;
+  }
 
   /* Further reduce animations on mobile */
   .App::after {
     content: '☕ ☕ ☕';
     font-size: 1.2rem;
     animation-duration: 40s;
+  }
+  
+  /* Disable some heavy animations on very small screens */
+  .coffee-card:hover {
+    transform: none;
+  }
+  
+  .team-card:hover {
+    transform: none;
+  }
+}
+
+/* Performance Optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Auth Components Desktop Styles */
+.auth-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+  padding: 120px 1rem 2rem !important;
+}
+
+.auth-card {
+  max-width: 900px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+/* Employee auth specific styling */
+.employee-auth .auth-card {
+  max-width: 500px !important;
+  flex-direction: column !important;
+}
+
+.auth-content {
+  padding: 3rem 2rem;
+}
+
+/* Auth Components Mobile Styles */
+@media (max-width: 768px) {
+  /* UserAuth and EmployeeAuth responsive styles */
+  .auth-container {
+    padding: 100px 0.5rem 1rem !important;
+    min-height: 100vh !important;
+  }
+  
+  .auth-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 16px !important;
+  }
+  
+  .auth-content {
+    padding: 2rem 1.5rem !important;
+  }
+  
+  .auth-header {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .auth-title {
+    font-size: 1.8rem !important;
+  }
+  
+  .auth-subtitle {
+    font-size: 1rem !important;
+  }
+  
+  .auth-form {
+    gap: 1rem !important;
+  }
+  
+  .auth-input {
+    padding: 0.8rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .auth-button {
+    padding: 0.8rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .auth-toggle {
+    font-size: 0.85rem !important;
+  }
+  
+  /* Hide coffee emoji on mobile */
+  .coffee-visual-desktop {
+    display: none !important;
+  }
+  
+  /* Make auth card single column on mobile */
+  .auth-container {
+    padding: 100px 0.5rem 1rem !important;
+    min-height: 100vh !important;
+  }
+  
+  .auth-card {
+    flex-direction: column !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 90px 0.3rem 0.5rem !important;
+  }
+  
+  .auth-content {
+    padding: 1.5rem 1rem !important;
+  }
+  
+  .auth-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .auth-subtitle {
+    font-size: 0.9rem !important;
+  }
+  
+  .auth-input {
+    padding: 0.7rem !important;
+    font-size: 0.85rem !important;
+  }
+  
+  .auth-button {
+    padding: 0.7rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Optimize for mobile performance */
+@media (max-width: 768px) {
+  * {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  
+  .coffee-card, .team-card, .stats-card {
+    will-change: transform;
+  }
+  
+  .coffee-card:hover, .team-card:hover, .stats-card:hover {
+    will-change: auto;
+  }
+  
+  /* Reduce complex animations on mobile */
+  .App::before {
+    animation-duration: 30s;
+  }
+  
+  .coffee-emoji {
+    animation: none;
+  }
+  
+  .coffee-card:hover .coffee-emoji {
+    animation: none;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .coffee-card:hover,
+  .team-card:hover,
+  .stats-card:hover {
+    transform: none;
+  }
+  
+  .nav-link:hover,
+  .cta-button:hover,
+  .order-now-btn:hover,
+  .learn-more-btn:hover {
+    transform: none;
+  }
+  
+  /* Increase touch targets */
+  .quantity-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .nav-link {
+    min-height: 44px;
+  }
+  
+  .menu-toggle {
+    min-width: 44px;
+    min-height: 44px;
   }
 }

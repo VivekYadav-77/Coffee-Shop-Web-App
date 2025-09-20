@@ -458,80 +458,16 @@
   }
   
   .team-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
   
   .team-subtitle {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
   }
   
   .team-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-  }
-  
-  .team-section {
-    padding: 2rem;
-  }
-  
-  .section-title {
-    font-size: 2rem;
-  }
-  
-  .section-icon {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .member-photo {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .member-name {
-    font-size: 1.3rem;
-  }
-  
-  .member-description {
-    font-size: 0.9rem;
-    text-align: center;
-  }
-  
-  .member-social {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-  
-  .social-btn {
-    padding: 0.7rem 1rem;
-    font-size: 0.85rem;
-  }
-  
-  .team-stats {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .scroll-content {
-    padding: 0.8rem 1.5rem;
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
-  }
-  
-  .scroll-text {
-    font-size: 0.8rem;
-    white-space: normal;
-  }
-}
-
-@media (max-width: 480px) {
-  .team-container {
-    padding: 0 1rem;
-  }
-  
-  .team-title {
-    font-size: 2rem;
   }
   
   .team-section {
@@ -542,32 +478,107 @@
     font-size: 1.5rem;
   }
   
+  .section-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
   .member-photo {
     width: 100px;
     height: 100px;
   }
   
   .member-name {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   
-  .stats-content h3 {
-    font-size: 2rem;
+  .member-description {
+    font-size: 0.8rem;
+    text-align: center;
+    line-height: 1.4;
+    margin: 0 0 1rem 0;
   }
   
-  .scroll-indicator {
-    bottom: 1rem;
+  .member-social {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  
+  .social-btn {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.75rem;
+    gap: 0.4rem;
+  }
+  
+  .team-stats {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .scroll-content {
-    padding: 0.6rem 1rem;
-    flex-direction: column;
-    gap: 0.3rem;
+    padding: 0.5rem 1.5rem;
+    flex-direction: row;
+    gap: 0.5rem;
+    text-align: center;
+    border-radius: 25px;
+    max-width: 90vw;
   }
   
   .scroll-text {
-    font-size: 0.75rem;
-    line-height: 1.2;
+    font-size: 0.65rem;
+    white-space: nowrap;
+    line-height: 1.1;
+    flex-shrink: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-container {
+    padding: 0 1rem;
+  }
+  
+  .team-title {
+    font-size: 1.8rem;
+  }
+  
+  .team-section {
+    padding: 1.2rem;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+  }
+  
+  .member-photo {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .member-name {
+    font-size: 1rem;
+  }
+  
+  .stats-content h3 {
+    font-size: 1.8rem;
+  }
+  
+  .scroll-indicator {
+    bottom: 0.8rem;
+  }
+  
+  .scroll-content {
+    padding: 0.4rem 1.2rem;
+    flex-direction: row;
+    gap: 0.4rem;
+    border-radius: 20px;
+    max-width: 95vw;
+  }
+  
+  .scroll-text {
+    font-size: 0.6rem;
+    line-height: 1;
+    white-space: nowrap;
+    flex-shrink: 1;
   }
 }
 

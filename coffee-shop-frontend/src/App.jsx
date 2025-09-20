@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import MenuGrid from './components/MenuGrid'
@@ -17,6 +17,7 @@ import ElegantMacchiato from './components/coffee/ElegantMacchiato'
 import ColdBrew from './components/coffee/ColdBrew'
 import IcedFrappe from './components/coffee/IcedFrappe'
 import FlatWhite from './components/coffee/FlatWhite'
+import CustomCoffee from './components/coffee/CustomCoffee'
 import MenuManagement from './components/employee/MenuManagement'
 import OrderManagement from './components/employee/OrderManagement'
 import AnalyticsPage from './components/employee/Analytics'
@@ -33,6 +34,11 @@ function App() {
   const [cartAnimation, setCartAnimation] = useState({ show: false, count: 0 })
   const [orderHistory, setOrderHistory] = useState([])
   const [currentOrder, setCurrentOrder] = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [menuManagementData, setMenuManagementData] = useState({
+    customMenu: [],
+    hiddenItems: []
+  })
   const menuRef = useRef(null)
 
   useEffect(() => {
@@ -59,6 +65,26 @@ function App() {
     // Load current order if exists
     const savedCurrentOrder = JSON.parse(localStorage.getItem('brewCraftCurrentOrder') || 'null')
     setCurrentOrder(savedCurrentOrder)
+
+    // Load menu management data
+    const savedCustomMenu = JSON.parse(localStorage.getItem('brewCraftMenu') || '[]')
+    const savedHiddenItems = JSON.parse(localStorage.getItem('brewCraftHiddenItems') || '[]')
+    setMenuManagementData({
+      customMenu: savedCustomMenu,
+      hiddenItems: savedHiddenItems
+    })
+  }, [])
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   // Save cart to localStorage whenever it changes
@@ -79,6 +105,12 @@ function App() {
       localStorage.removeItem('brewCraftCurrentOrder')
     }
   }, [currentOrder])
+
+  // Save menu management data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('brewCraftMenu', JSON.stringify(menuManagementData.customMenu))
+    localStorage.setItem('brewCraftHiddenItems', JSON.stringify(menuManagementData.hiddenItems))
+  }, [menuManagementData])
 
   useEffect(() => {
     if (currentPage === 'home') {
@@ -119,14 +151,14 @@ function App() {
   const handleAuthRequiredAction = (destination) => {
     if (destination === 'cart') {
       // Cart is accessible to everyone
-      setCurrentPage('cart')
+      handleNavigation('cart')
       return
     }
 
     if (destination === 'tracking') {
       // Check if user has a current order to track
       if (currentOrder) {
-        setCurrentPage('tracking')
+        handleNavigation('tracking')
         return
       } else {
         alert('No active order to track. Place an order first!')
@@ -137,25 +169,25 @@ function App() {
     if (destination === 'checkout' && !isUserLoggedIn) {
       // Checkout requires authentication
       setPendingDestination(destination)
-      setCurrentPage('auth')
+      handleNavigation('auth')
       return
     }
 
     // Handle coffee detail pages (no auth required)
     if (destination && destination.startsWith('coffee-')) {
-      setCurrentPage(destination)
+      handleNavigation(destination)
       return
     }
 
     if (isUserLoggedIn) {
       // User is logged in, proceed to destination
       if (destination === 'cart') {
-        setCurrentPage('cart')
+        handleNavigation('cart')
       } else if (destination === 'checkout') {
-        setCurrentPage('checkout')
+        handleNavigation('checkout')
       } else if (destination === 'tracking') {
         if (currentOrder) {
-          setCurrentPage('tracking')
+          handleNavigation('tracking')
         } else {
           alert('No active order to track. Place an order first!')
         }
@@ -165,18 +197,18 @@ function App() {
     } else {
       // User not logged in, save destination and show auth
       setPendingDestination(destination)
-      setCurrentPage('auth')
+      handleNavigation('auth')
     }
   }
 
   const handleEmployeeAuthRequiredAction = (destination) => {
     if (isEmployeeLoggedIn) {
       // Employee is logged in, proceed to destination
-      setCurrentPage(destination)
+      handleNavigation(destination)
     } else {
       // Employee not logged in, show employee auth
       alert('Please sign in as an employee to access this feature')
-      setCurrentPage('employeeAuth')
+      handleNavigation('employeeAuth')
     }
   }
 
@@ -251,6 +283,19 @@ function App() {
     }, 0)
   }
 
+  const getCustomCoffeeData = (coffeeId) => {
+    return menuManagementData.customMenu.find(item => item.id === parseInt(coffeeId))
+  }
+
+  // Menu management functions
+  const updateCustomMenu = (newMenu) => {
+    setMenuManagementData(prev => ({ ...prev, customMenu: newMenu }))
+  }
+
+  const updateHiddenItems = (newHiddenItems) => {
+    setMenuManagementData(prev => ({ ...prev, hiddenItems: newHiddenItems }))
+  }
+
   const handleUserLogin = (userData) => {
     if (userData.type === 'employee') {
       setIsEmployeeLoggedIn(true)
@@ -281,7 +326,7 @@ function App() {
         setPendingDestination(null)
       }
     }
-    setCurrentPage('home')
+    handleNavigation('home')
   }
 
   const handleUserLogout = () => {
@@ -290,11 +335,11 @@ function App() {
     localStorage.removeItem('brewCraftUser')
     localStorage.removeItem('brewCraftEmployee')
     // Keep cart items when logging out
-    setCurrentPage('home')
+    handleNavigation('home')
   }
 
   const handleEmployeeAuth = () => {
-    setCurrentPage('employeeAuth')
+    handleNavigation('employeeAuth')
   }
 
   const handleOrderComplete = (orderData) => {
@@ -321,7 +366,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <ClassicEspresso
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -333,7 +378,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <SmoothAmericano
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -345,7 +390,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <CreamyLatte
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -357,7 +402,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <FrothyCappuccino
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -369,7 +414,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <DecadentMocha
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -381,7 +426,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <ElegantMacchiato
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -393,7 +438,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <ColdBrew
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -405,7 +450,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <IcedFrappe
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -417,7 +462,7 @@ function App() {
         const qty = existing ? existing.quantity : 0
         return (
           <FlatWhite
-            onBack={() => setCurrentPage('home')}
+            onBack={() => handleNavigation('home')}
             onAddToCart={addToCart}
             onUpdateQuantity={updateCartQuantity}
             currentQuantity={qty}
@@ -430,7 +475,7 @@ function App() {
             onLogin={handleUserLogin}
             onCancel={() => {
               setPendingDestination(null)
-              setCurrentPage('home')
+              handleNavigation('home')
             }}
           />
         )
@@ -438,7 +483,7 @@ function App() {
         return (
           <UserAuth 
             onLogin={handleUserLogin}
-            onCancel={() => setCurrentPage('home')}
+            onCancel={() => handleNavigation('home')}
           />
         )
       case 'cart':
@@ -448,7 +493,7 @@ function App() {
             onUpdateQuantity={updateCartQuantity}
             onRemoveItem={removeFromCart}
             onClearCart={clearCart}
-            onBackToMenu={() => setCurrentPage('home')}
+            onBackToMenu={() => handleNavigation('home')}
             onCheckout={() => handleAuthRequiredAction('checkout')}
             isUserLoggedIn={isUserLoggedIn}
             cartTotal={getCartTotal()}
@@ -467,28 +512,33 @@ function App() {
       case 'tracking':
         return (
           <OrderTrackingPage
-            onBackToHome={() => setCurrentPage('home')}
+            onBackToHome={() => handleNavigation('home')}
             orderData={currentOrder}
           />
         )
       case 'menu-management':
         return (
-          <MenuManagement onBack={() => setCurrentPage('home')} />
+          <MenuManagement 
+            onBack={() => handleNavigation('home')}
+            customMenu={menuManagementData.customMenu}
+            hiddenItems={menuManagementData.hiddenItems}
+            onUpdateCustomMenu={updateCustomMenu}
+            onUpdateHiddenItems={updateHiddenItems}
+          />
         )
       case 'order-management':
         return (
-          <OrderManagement onBack={() => setCurrentPage('home')} />
+          <OrderManagement onBack={() => handleNavigation('home')} />
         )
       case 'analytics':
         return (
-          <AnalyticsPage onBack={() => setCurrentPage('home')} />
+          <AnalyticsPage onBack={() => handleNavigation('home')} />
         )
       case 'team':
         return (
-          <TeamPage onBack={() => setCurrentPage('home')} />
+          <TeamPage onBack={() => handleNavigation('home')} />
         )
       case 'home':
-      default:
         return (
           <>
             <Hero onExploreClick={scrollToMenu} />
@@ -499,6 +549,50 @@ function App() {
                 onAddToCart={addToCart}
                 cartItems={cartItems}
                 onUpdateQuantity={updateCartQuantity}
+                customMenu={menuManagementData.customMenu}
+                hiddenItems={menuManagementData.hiddenItems}
+              />
+            )}
+            <Footer 
+              onEmployeeAuth={handleEmployeeAuth} 
+              onEmployeeAuthRequired={handleEmployeeAuthRequiredAction}
+              isEmployeeLoggedIn={isEmployeeLoggedIn}
+              onNavigate={handleNavigation}
+            />
+          </>
+        )
+      default:
+        // Handle custom coffee pages
+        if (currentPage.startsWith('coffee-custom-')) {
+          const coffeeId = currentPage.replace('coffee-custom-', '')
+          const coffeeData = getCustomCoffeeData(coffeeId)
+          const existing = cartItems.find(ci => ci.id === parseInt(coffeeId))
+          const qty = existing ? existing.quantity : 0
+          
+          return (
+            <CustomCoffee
+              coffeeData={coffeeData}
+              onBack={() => handleNavigation('home')}
+              onAddToCart={addToCart}
+              onUpdateQuantity={updateCartQuantity}
+              currentQuantity={qty}
+            />
+          )
+        }
+        
+        // Default fallback to home
+        return (
+          <>
+            <Hero onExploreClick={scrollToMenu} />
+            <div ref={menuRef} style={{height: '1px', position: 'relative'}}></div>
+            {isMenuVisible && (
+              <MenuGrid 
+                onCoffeeClick={handleAuthRequiredAction}
+                onAddToCart={addToCart}
+                cartItems={cartItems}
+                onUpdateQuantity={updateCartQuantity}
+                customMenu={menuManagementData.customMenu}
+                hiddenItems={menuManagementData.hiddenItems}
               />
             )}
             <Footer 

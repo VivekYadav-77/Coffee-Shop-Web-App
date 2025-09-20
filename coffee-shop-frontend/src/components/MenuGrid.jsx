@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Plus, Minus } from 'lucide-react'
 import '../styles/menu/menu-grid.css'
 
-const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity }) => {
+const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity, customMenu, hiddenItems }) => {
   const [visibleCards, setVisibleCards] = useState([])
+  const [coffeeItems, setCoffeeItems] = useState([])
 
-  const coffeeItems = [
+  // Default coffee items (the original 9)
+  const defaultCoffeeItems = [
     { 
       id: 1, 
       name: "Classic Espresso", 
@@ -80,6 +82,16 @@ const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity }) =
     }
   ]
 
+  // Load and merge coffee items
+  useEffect(() => {
+    // Filter out hidden default items
+    const visibleDefaultItems = defaultCoffeeItems.filter(item => !hiddenItems.includes(item.id))
+    
+    // Combine visible default items with custom items
+    const allItems = [...visibleDefaultItems, ...customMenu]
+    setCoffeeItems(allItems)
+  }, [customMenu, hiddenItems])
+
   useEffect(() => {
     const timer = setInterval(() => {
       setVisibleCards(prev => {
@@ -92,15 +104,23 @@ const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity }) =
     }, 200)
 
     return () => clearInterval(timer)
-  }, [])
+  }, [coffeeItems])
 
-  const handleCardClick = (coffeeName) => {
-    onCoffeeClick(`coffee-${coffeeName.replace(/\s+/g, '-').toLowerCase()}`)
+  const handleCardClick = (item) => {
+    if (item.isCustom) {
+      onCoffeeClick(`coffee-custom-${item.id}`)
+    } else {
+      onCoffeeClick(`coffee-${item.name.replace(/\s+/g, '-').toLowerCase()}`)
+    }
   }
 
-  const handleLearnMore = (e, coffeeName) => {
+  const handleLearnMore = (e, item) => {
     e.stopPropagation()
-    onCoffeeClick(`coffee-${coffeeName.replace(/\s+/g, '-').toLowerCase()}`)
+    if (item.isCustom) {
+      onCoffeeClick(`coffee-custom-${item.id}`)
+    } else {
+      onCoffeeClick(`coffee-${item.name.replace(/\s+/g, '-').toLowerCase()}`)
+    }
   }
 
   const handleAddToCart = (e, item) => {
@@ -138,7 +158,7 @@ const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity }) =
                 opacity: visibleCards.includes(index) ? 1 : 0,
                 animationDelay: `${index * 0.15}s`
               }}
-              onClick={() => handleCardClick(item.name)}
+              onClick={() => handleCardClick(item)}
             >
               <div className="coffee-image">
                 <img className="coffee-photo" src={item.imageUrl} alt={`${item.name} image`} loading="lazy" />
@@ -150,7 +170,7 @@ const MenuGrid = ({ onCoffeeClick, onAddToCart, cartItems, onUpdateQuantity }) =
                 <div className="card-buttons">
                   <button 
                     className="learn-more-btn" 
-                    onClick={(e) => handleLearnMore(e, item.name)}
+                    onClick={(e) => handleLearnMore(e, item)}
                   >
                     <span>Learn More</span>
                   </button>

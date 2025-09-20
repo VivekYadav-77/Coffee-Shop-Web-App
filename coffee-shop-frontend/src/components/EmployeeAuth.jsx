@@ -125,29 +125,18 @@ const EmployeeAuth = ({ onLogin, onCancel }) => {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      paddingTop: '120px',
-      paddingBottom: '2rem',
-      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #764ba2 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '120px 1rem 2rem'
+    <div className="auth-container employee-auth" style={{
+      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #764ba2 100%)'
     }}>
-      <div style={{
-        display: 'flex',
-        maxWidth: '500px',
-        width: '100%',
+      <div className="auth-card" style={{
         background: 'rgba(26, 26, 46, 0.2)',
         backdropFilter: 'blur(30px)',
         border: '1px solid rgba(255, 255, 255, 0.15)',
         borderRadius: '24px',
         overflow: 'hidden',
-        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)',
-        flexDirection: 'column'
+        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)'
       }}>
-        <div style={{ padding: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', color: 'white' }}>
+        <div className="auth-content" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: 'white' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
             <button 
               onClick={onCancel}

@@ -29,6 +29,10 @@ const ClassicEspresso = ({ onBack, onAddToCart, onUpdateQuantity, currentQuantit
                 className="coffee-image-placeholder" 
                 src="/espresso.png" 
                 alt="Classic Espresso image"
+                loading="lazy"
+                decoding="async"
+                width="520"
+                height="520"
               />
             </div>
           </div>

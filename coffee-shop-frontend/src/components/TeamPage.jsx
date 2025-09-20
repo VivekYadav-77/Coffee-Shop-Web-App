@@ -24,7 +24,7 @@ const TeamPage = ({ onBack }) => {
     // Create scroll text
     const scrollText = document.createElement('p')
     scrollText.className = 'scroll-text'
-    scrollText.textContent = 'Scroll down to explore all our talented developers'
+    scrollText.textContent = 'Scroll to explore our team'
     
     // Create scroll arrow
     const scrollArrow = document.createElement('div')

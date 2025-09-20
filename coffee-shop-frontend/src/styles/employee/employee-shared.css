@@ -31,3 +31,101 @@
 .badge { background: rgba(74,222,128,0.2); border: 1px solid rgba(74,222,128,0.3); color: #4ade80; border-radius: 999px; padding: 0.25rem 0.5rem; font-size: 0.8rem; }
 .muted { color: rgba(255,255,255,0.8); font-size: 0.9rem; }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .emp-container {
+    padding: 0 1rem;
+  }
+  
+  .emp-title {
+    font-size: 1.8rem;
+  }
+  
+  .emp-form {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  
+  .emp-form input {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .emp-form button {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .emp-row {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: stretch;
+  }
+  
+  .emp-row-main {
+    text-align: center;
+  }
+  
+  .emp-row-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .emp-row-actions input {
+    width: 120px !important;
+  }
+  
+  /* Analytics specific mobile styles */
+  .emp-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .emp-container {
+    padding: 0 0.5rem;
+  }
+  
+  .emp-title {
+    font-size: 1.5rem;
+  }
+  
+  .emp-form {
+    gap: 0.6rem;
+  }
+  
+  .emp-form input {
+    padding: 0.7rem;
+    font-size: 0.85rem;
+  }
+  
+  .emp-form button {
+    padding: 0.7rem;
+    font-size: 0.85rem;
+  }
+  
+  .emp-row {
+    padding: 0.6rem;
+  }
+  
+  .emp-row-actions input {
+    width: 100px !important;
+    font-size: 0.8rem;
+  }
+  
+  /* Analytics specific mobile styles for small screens */
+  .emp-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.6rem;
+  }
+  
+  .emp-card {
+    padding: 1rem;
+  }
+  
+  .emp-metric {
+    font-size: 1.5rem;
+  }
+}
+
