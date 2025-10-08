@@ -26,7 +26,6 @@ const sendWelcomeEmail = async (email, name) => {
       subject: "Welcome to XYZ Coffee Shop!☕",
       text: `<div style="font-family: Arial, sans-serif; max-width:600px;margin:0 auto; padding: 0px; background-color: #f9f9f9;">
         <div style = "background : linear-gradient(135deg, #d7706, #ea580c); padding: 40px 30px; text-align: center; color: white;">
-        <h1 style = "color: white; margin 0px; font-size:25px;">Welcome to XYZ Coffee shop!☕</h1>
         <p style = "color: #fef3c7; margin: 10px 0 0 0; font-size: 15px;">We're thrilled to have you here and your premium coffee experience starts here.</p>
         </div>
         <div style= "padding: 40px 30px ; background: white; margin: 0 25px;">
