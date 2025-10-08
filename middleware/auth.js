@@ -48,5 +48,4 @@ module.exports = {
   authenticateToken,
   requireAdmin,
   handleValidationErrors,
-  strictRateLimit
 };
