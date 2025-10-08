@@ -41,7 +41,6 @@ const sendWelcomeEmail = async (email, name) => {
                 <li>🥐 Fresh pastries baked daily in-house</li>
                 <li>📱 Easy online ordering and real-time tracking</li>
                 <li>🎁 Exclusive member offers and loyalty rewards and cashback</li>
-                <li>👨‍🍳 Expert baristas from around the world crafting perfect cups</li>
               </ul>
             </div>
             
