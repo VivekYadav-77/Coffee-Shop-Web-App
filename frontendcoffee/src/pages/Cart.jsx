@@ -24,7 +24,6 @@ const Cart = () => {
     (state) => state.cart
   );
   const { isAuthenticated } = useSelector((state) => state.user);
-  console.log("cart", items);
   const isCheckoutDisabled = items.some((item) => !item.isAvailable);
 
   const handleUpdateQuantity = async (_id, newQuantity) => {

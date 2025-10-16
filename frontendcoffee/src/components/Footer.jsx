@@ -2,7 +2,6 @@ import { Coffee, Facebook, Instagram, Twitter } from "lucide-react";
 import { useSelector } from "react-redux";
 const Footer = () => {
   const { user } = useSelector((state) => state.user);
-  console.log("getting the user from footer", user);
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -1,7 +1,6 @@
 // API utility functions for backend integration
 // TODO: Connect with Express backend API
 import axios from "axios";
-console.log("API URL:", import.meta.env.VITE_API_URL);
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -16,7 +15,6 @@ export const productsApi = {
     // TODO: Replace with actual API call
     try {
       const res = await API.get("/products");
-      console.log("response from the api", res.data);
       return res.data;
     } catch (err) {
       console.error("API Error:", err);
@@ -25,7 +23,6 @@ export const productsApi = {
   },
   getProductById: async (id) => {
     const res = await API.get(`/products/${id}`);
-    console.log("res from the prodid", res);
     return res.data.product;
   },
   submitReview: async (productId, reviewData) => {
@@ -43,7 +40,6 @@ export const adminApi = {
   getAllProducts: async () => {
     try {
       const res = await API.get("/products");
-      console.log("response from the adminapi", res.data);
       return res.data;
     } catch (err) {
       console.error("API from the adminError:", err);
@@ -55,15 +51,9 @@ export const adminApi = {
   },
   getProductById: async (id) => {
     const res = await API.get(`/products/${id}`);
-    console.log("res from the prodid", res);
     return res.data.product;
   },
   create: async (formData) => {
-    console.log("hello from api create", formData);
-    console.log("Verifying FormData contents:");
-    for (let [key, value] of formData.entries()) {
-      console.log(key, ":", value);
-    }
     const response = await API.post("/admin/products", formData);
     return response.data;
   },
@@ -104,9 +94,7 @@ export const couponsApi = {
 export const authApi = {
   login: async (credentials) => {
     try {
-      console.log(credentials);
       const res = await API.post("/auth/login", credentials);
-      console.log("from login", res);
       return res.data.user;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -120,10 +108,8 @@ export const authApi = {
     try {
       const res = await API.post("/auth/signup", userData);
 
-      console.log("getting the res form the signup ", res);
       return res.data.user;
     } catch (error) {
-      console.log("error ", error.response.data);
       if (error.response && error.response.data) {
         throw new Error(error.response.data.message);
       }
@@ -132,7 +118,6 @@ export const authApi = {
   },
   verifyEmailCode: async (email, code) => {
     const res = await API.post("/auth/verify-code", { email, code });
-    console.log("resfrom the ve", res);
     return res.data;
   },
   resendVerificationEmail: async (email) => {
@@ -141,8 +126,6 @@ export const authApi = {
   },
   logout: async () => {
     const res = await API.get("/auth/logout");
-    console.log("from the logout", res);
-    console.log("TODO: Implement logout API call");
     return Promise.resolve();
   },
   updateProfile: async (userData) => {
@@ -193,43 +176,34 @@ export const ordersApi = {
     // TODO: Replace with actual API call
 
     const res = await API.post("/orders", orderData);
-    console.log("placeorder", res);
     return res.data;
   },
 
   customerOrders: async (userId) => {
     // TODO: Replace with actual API call
     const res = await API.get(`/orders/customer/${userId}`);
-    console.log("customerorder", res);
-
     return res.data;
   },
   adminOrders: async () => {
     // TODO: Replace with actual API call
     const res = await API.get("/orders/admin");
-    console.log("adminorders", res.data);
 
     return res.data;
   },
   agentOrders: async (agentId) => {
     // TODO: Replace with actual API call
     const res = await API.get(`/orders/agent/dashboard/${agentId}`);
-    console.log("agentorders", res);
 
     return res.data;
   },
   acceptOrders: async (orderId, agentId) => {
     // TODO: Replace with actual API call
-    console.log(orderId, agentId);
     const res = await API.patch(`/orders/${orderId}/accept`, { agentId });
-    console.log("res", res);
-    console.log("acceptorderfromapi", res.data);
     return res.data;
   },
   updateOrderStatus: async (orderId, status, otp = null) => {
     // TODO: Replace with actual API call
     const res = await API.patch(`/orders/${orderId}/status`, { status, otp });
-    console.log("updateorderstatus", res);
     return res.data;
   },
   updateAgentLocation: (orderId, locationData) =>

@@ -209,12 +209,12 @@ const handleuserlogin = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "lax",
+      sameSite:isProd ? 'None' : 'Lax',
     });
     res.cookie("refreshToken", refreshTokenPlain, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "lax",
+      sameSite: isProd ? 'None' : 'Lax',
     });
 
     return res.json({ user });

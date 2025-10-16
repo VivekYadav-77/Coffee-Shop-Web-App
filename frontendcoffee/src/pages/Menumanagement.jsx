@@ -24,15 +24,9 @@ const MenuManagement = () => {
     setError(null);
     try {
       if (productToEdit) {
-        console.log("FormData contents form the edit one :");
-        for (let [key, value] of formData.entries()) {
-          console.log(key, ":", value);
-        }
         const updatedItem = await adminApi.update(productToEdit._id, formData);
-        console.log("updateitem", updatedItem);
       } else {
         const newItem = await adminApi.create(formData);
-        console.log("adding new item", newItem);
       }
       setView("list");
     } catch (err) {
@@ -62,7 +56,6 @@ const MenuManagement = () => {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("userData", updatedData);
       const updatedItem = await adminApi.toggleStock(product._id);
       dispatch(updateMenuItemState(updatedItem));
     } catch (err) {

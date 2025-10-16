@@ -23,7 +23,6 @@ const userSlice = createSlice({
     loginFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-      console.log("error from login ", action.payload);
     },
     logout: (state) => {
       state.isAuthenticated = false;

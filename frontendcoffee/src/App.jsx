@@ -116,7 +116,6 @@ function App() {
       const handleOrderUpdate = (order) => dispatch(updateOrAddOrder(order));
 
       const handleProductUpdate = (product) => {
-        console.log('[APP.JSX] Received "product_update" event:', product);
 
         dispatch(updateMenuItemState(product));
       };

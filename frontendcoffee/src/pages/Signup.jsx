@@ -52,11 +52,9 @@ const Signup = () => {
         email: formData.email,
         password: formData.password,
       });
-      console.log("4. API call successful. Navigating...", response);
 
       navigate("/verify-code", { state: { email: formData.email } });
     } catch (err) {
-      console.log("signup error ", err.message);
       console.error("5. API call failed with error:", err);
 
       dispatch(
