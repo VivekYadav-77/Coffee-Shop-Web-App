@@ -24,7 +24,7 @@ import couponrouter from "./routes/cuponroute.js";
 import dotenv from "dotenv";
 dotenv.config();
 const frontednapi = process.env.FRONTEND_ADDRESS;
-const PORT = 3000;
+const PORT = process.env.PORT || 3000
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: `${frontednapi}` } });

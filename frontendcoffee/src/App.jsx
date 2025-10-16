@@ -9,7 +9,7 @@ import Cart from "./pages/Cart.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import MenuManagement from "./pages/Menumanagement.jsx";
-import CheckoutPage from "./pages/checkout.jsx";
+import CheckoutPage from "./pages/Checkout.jsx";
 import MyOrders from "./pages/CustomerOrder.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AgentDashboard from "./pages/AgentDashboard.jsx";
