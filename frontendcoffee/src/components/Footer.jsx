@@ -1,5 +1,6 @@
 import { Coffee, Facebook, Instagram, Twitter } from "lucide-react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router";
 const Footer = () => {
   const { user } = useSelector((state) => state.user);
   return (
@@ -44,12 +45,12 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="/team"
+                <Link
+                  to="/team"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   About Us
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -59,12 +60,12 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Customer Service</h3>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="Contactform"
+                <Link
+                  to="/Contactform"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Contact Us
-                </a>
+                  Contact us
+                </Link>
               </li>
               <li>
                 <a
