@@ -22,10 +22,13 @@ const ProductCard = ({ product, animationDelay }) => {
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-
+if (!user) {
+      navigate("/login");
+      return;
+    }
     if (isAdded) return;
 
-    if (user) {
+    if (user&&user.role === "CUSTOMER") {
       try {
         await cartApi.addToCart(product._id, 1);
         dispatch(addToCart(product));
@@ -79,9 +82,8 @@ const ProductCard = ({ product, animationDelay }) => {
             <button className="w-full py-3 px-2 rounded-xl text-sm font-semibold bg-transparent border-2 border-white/30 text-white transition-all hover:border-white/60 hover:bg-white/10">
               Learn More
             </button>
-            {user && user.role !== "ADMIN" && user.role !== "AGENT" &&(
               <button
-                onClick={handleAddToCart}
+                onClick={(e)=>handleAddToCart(e,product)}
                 disabled={!product.inStock || isAdded}
                 className={`w-full py-3 px-2 rounded-xl text-sm font-semibold text-white transition-all duration-300
                   ${
@@ -97,7 +99,7 @@ const ProductCard = ({ product, animationDelay }) => {
                   ? "Add to Cart"
                   : "Out of Stock"}
               </button>
-            )}
+          
           </div>
         </div>
       </div>

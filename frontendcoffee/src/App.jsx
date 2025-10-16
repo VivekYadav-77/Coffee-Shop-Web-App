@@ -85,6 +85,7 @@ function App() {
                 name: item.productId.name,
                 price: item.productId.price,
                 imageUrl: item.productId.imageUrl,
+                inStock: item.productId.inStock,
                 quantity: item.quantity,
               })
             );
