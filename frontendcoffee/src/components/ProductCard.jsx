@@ -82,6 +82,7 @@ if (!user) {
             <button className="w-full py-3 px-2 rounded-xl text-sm font-semibold bg-transparent border-2 border-white/30 text-white transition-all hover:border-white/60 hover:bg-white/10">
               Learn More
             </button>
+            {user?.role !== "ADMIN" && user?.role !== "AGENT" && (
               <button
                 onClick={(e)=>handleAddToCart(e,product)}
                 disabled={!product.inStock || isAdded}
@@ -99,7 +100,7 @@ if (!user) {
                   ? "Add to Cart"
                   : "Out of Stock"}
               </button>
-          
+            )}
           </div>
         </div>
       </div>

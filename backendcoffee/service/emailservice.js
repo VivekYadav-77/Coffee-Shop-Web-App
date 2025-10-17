@@ -1,40 +1,55 @@
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+import sgMail from '@sendgrid/mail';
+import dotenv from 'dotenv';
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASS,
-  },
-});
+// Set the API key for SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const sendVerificationEmail = async (user, code) => {
-  const mailOptions = {
-    from: '"The Roasting House" <no-reply@TheRoastingHouse.com>',
-    to: user.email,
-    subject: "Your The Roasting House Verification Code",
-    html: `
+    const msg = {
+        to: user.email,
+        // IMPORTANT: This 'from' email MUST be the one you verified on SendGrid
+        from: process.env.EMAIL_USER,
+        subject: 'Your THE ROUSTING HOUSE Verification Code',
+        html: `
             <h2>Hello ${user.name},</h2>
-            <p>Thank you for registering! Here is your verification code:</p>
-            <h1 style="font-size: 36px; tracking-letter: 2px;">${code}</h1>
+            <p>Here is your verification code:</p>
+            <h1 style="font-size: 36px; letter-spacing: 2px;">${code}</h1>
             <p>This code will expire in 10 minutes.</p>
         `,
-  };
-  await transporter.sendMail(mailOptions);
+    };
+
+    try {
+        await sgMail.send(msg);
+        console.log('Verification email sent successfully.');
+    } catch (error) {
+        console.error('Error sending verification email:', error);
+        if (error.response) {
+            console.error(error.response.body)
+        }
+    }
 };
+
 export const sendPasswordResetCodeEmail = async (user, code) => {
-  const mailOptions = {
-    from: '"Brew Craft" <no-reply@brewcraft.com>',
-    to: user.email,
-    subject: "Your Brew Craft Password Reset Code",
-    html: `
+    const msg = {
+        to: user.email,
+        from: process.env.EMAIL_USER, // Use your verified sender
+        subject: 'Your THE ROUSTING HOUSE Password Reset Code',
+        html: `
             <h2>Hello ${user.name},</h2>
-            <p>You requested a password reset. Here is your code:</p>
+            <p>Here is your password reset code:</p>
             <h1 style="font-size: 36px; letter-spacing: 2px;">${code}</h1>
-            <p>This code is valid for 10 minutes. If you did not request this, please ignore this email.</p>
+            <p>This code is valid for 10 minutes.</p>
         `,
-  };
-  await transporter.sendMail(mailOptions);
+    };
+
+    try {
+        await sgMail.send(msg);
+        console.log('Password reset email sent successfully.');
+    } catch (error) {
+        console.error('Error sending password reset email:', error);
+        if (error.response) {
+            console.error(error.response.body)
+        }
+    }
 };
