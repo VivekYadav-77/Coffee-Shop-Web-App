@@ -4,13 +4,13 @@
     {
       "src": "frontendcoffee/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": { "distDir": "frontendcoffee/dist" }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/frontendcoffee/dist/index.html"
+      "source": "/(.*)",
+      "destination": "/frontendcoffee/dist/index.html"
     }
   ]
 }
