@@ -7,10 +7,10 @@
       "config": { "distDir": "frontendcoffee/dist" }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/frontendcoffee/dist/index.html"
+      "src": "/(.*)",
+      "dest": "frontendcoffee/dist/index.html"
     }
   ]
 }
