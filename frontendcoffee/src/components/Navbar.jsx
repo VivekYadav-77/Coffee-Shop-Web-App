@@ -52,6 +52,7 @@ const Navbar = () => {
         navigate("/");
         authApi.logout();
         setIsProfileOpen(false);
+        setIsMenuOpen(false);
     };
 
     const isActiveLink = (path) => location.pathname === path;
