@@ -20,7 +20,6 @@ const Navbar = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
-    // Effect for scroll detection, outside click, and mobile scroll lock
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 50);
         window.addEventListener('scroll', handleScroll);
@@ -32,17 +31,19 @@ const Navbar = () => {
         };
         document.addEventListener('mousedown', handleClickOutside);
 
-        // Scroll lock for mobile menu
+       return () => {
+            window.removeEventListener('scroll', handleScroll);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+    useEffect(() => {
         if (isMenuOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }
-
         return () => {
-            window.removeEventListener('scroll', handleScroll);
-            document.removeEventListener('mousedown', handleClickOutside);
-            document.body.style.overflow = 'auto'; 
+            document.body.style.overflow = 'auto';
         };
     }, [isMenuOpen]);
 
@@ -183,7 +184,7 @@ const Navbar = () => {
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
-                        className="fixed top-0 right-0 h-full w-full max-w-xs bg-slate-900/95 backdrop-blur-2xl border-l border-white/10 lg:hidden"
+                        className="fixed top-0 right-0 h-screen w-full max-w-xs bg-slate-900/95 backdrop-blur-2xl border-l border-white/10 lg:hidden"
                     >
                         <nav className="flex flex-col items-center justify-center h-full gap-6 p-8">
                             <NavLink to="/" icon={<User size={16}/>}>Home</NavLink>
