@@ -20,6 +20,7 @@ const AgentDashboard = () => {
   const [otpValues, setOtpValues] = useState({});
   const [selectedOrderForMap, setSelectedOrderForMap] = useState(null);
   const [currentAgentLocation, setCurrentAgentLocation] = useState(null);
+  const [locationError, setLocationError] = useState(false)
   const { list: allOrders } = useSelector((state) => state.orders) || {
     list: [],
   };
@@ -59,14 +60,47 @@ const AgentDashboard = () => {
         .catch((error) => console.error("Failed to fetch agent stats:", error));
     }
   }, [currentAgent]);
+  
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setCurrentAgentLocation({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-      });
-    });
-  }, []);
+  const fetchLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCurrentAgentLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+        setLocationError(false); 
+      },
+      (err) => {
+        console.error("Geolocation Error:", err.message);
+        setLocationError(true); 
+      }
+    );
+  };
+
+  if (!navigator.permissions) {
+    console.error("Permissions API is not supported by your browser.");
+    fetchLocation();
+    return;
+  }
+
+  navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
+    if (permissionStatus.state === "granted") {
+      fetchLocation();
+    } else {
+      setLocationError(true);
+    }
+
+    permissionStatus.onchange = () => {
+      if (permissionStatus.state === "granted") {
+        fetchLocation(); 
+      } else {
+        setLocationError(true);
+      }
+    };
+  });
+}, []);
+  
   // Effect for Live Location Tracking
   useEffect(() => {
     let intervalId = null;
@@ -76,7 +110,7 @@ const AgentDashboard = () => {
         String(o.deliveryPartner?.agentId) === String(currentAgent?._id)
     );
 
-    if (activeDelivery) {
+    if (activeDelivery && !locationError) {
       intervalId = setInterval(() => {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -93,7 +127,7 @@ const AgentDashboard = () => {
     }
 
     return () => clearInterval(intervalId);
-  }, [allOrders, currentAgent]);
+  }, [allOrders, currentAgent,locationError]);
 
   // Handler to accept an order
   const handleAcceptOrder = async (orderId) => {
@@ -163,7 +197,7 @@ const AgentDashboard = () => {
       String(o.deliveryPartner?.agentId) === String(currentAgent?._id) &&
       o.status !== "Delivered"
   );
-
+const hasActiveOrder = myOrders.length > 0;
   const agentSteps = ["Out for Delivery", "Delivered"];
   const agentIcons = { "Out for Delivery": Truck, Delivered: ThumbsUp };
 
@@ -223,7 +257,9 @@ const AgentDashboard = () => {
                   </p>
                   <button
                     onClick={() => handleAcceptOrder(order._id)}
-                    className="mt-4 w-full bg-green-500 ..."
+                   disabled={hasActiveOrder}
+            className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+            title={hasActiveOrder ? "You must complete your active delivery first" : "Accept this order"}
                   >
                     Accept Order
                   </button>
@@ -289,15 +325,24 @@ const AgentDashboard = () => {
                         </button>
                       </div>
                     )}
-                    {(order.status === "Accepted by Agent" ||
+                   {(order.status === "Accepted by Agent" ||
                       order.status === "Out for Delivery") && (
-                      <button
-                        onClick={() => setSelectedOrderForMap(order)}
-                        disabled={!currentAgentLocation}
-                        className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-                      >
-                        <MapIcon size={16} /> Show Route Map
-                      </button>
+                      <>
+                        {locationError ? (
+                          <div className="mt-2 text-center bg-red-800 text-white font-semibold py-2 px-4 rounded">
+                            Please enable location access to see map.
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setSelectedOrderForMap(order)}
+                            disabled={!currentAgentLocation}
+                            className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <MapIcon size={16} />
+                            {currentAgentLocation ? "Show Route Map" : "Getting Location..."}
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                   <OrderStatusTracker
