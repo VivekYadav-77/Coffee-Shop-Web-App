@@ -21,6 +21,7 @@ import analyticrouter from "./routes/analytics.js";
 import chatbotRoute from "./routes/chatBotroute.js";
 import productreviewrouter from "./routes/productReviewroute.js";
 import couponrouter from "./routes/cuponroute.js";
+import { startTokenCleanupJob } from "./expiretokenDelete.js/tokenCleanupJob.js";
 import dotenv from "dotenv";
 dotenv.config();
 const frontednapi = process.env.FRONTEND_ADDRESS;
@@ -80,7 +81,7 @@ app.use("/coupons", authMiddleware, couponrouter);
 app.use("/orders", authMiddleware, orderrouter);
 app.use("/bot", chatbotRoute);
 app.use("/cart", authMiddleware, customerMiddleware, cartrouter);
-
+startTokenCleanupJob();
 server.listen(PORT, () => {
   console.log(`server is running on the port ${PORT}`);
 });
