@@ -64,6 +64,13 @@ const MenuManagement = () => {
       setIsLoading(false);
     }
   };
+  const getImageUrl = (url) => {
+        if (!url) return ''; 
+        if (url.startsWith('http')) {
+            return url; 
+        }
+        return `${backendaddress}${url}`; 
+    };
 
   if (view === "form") {
     return (
@@ -126,7 +133,7 @@ const MenuManagement = () => {
             >
               <div className="flex items-center gap-4 flex-grow">
                 <img
-                  src={`${backendaddress}${item.imageUrl}`}
+                  src={getImageUrl(item.imageUrl)}
                   alt={item.name}
                   className="w-16 h-16 rounded-md object-cover flex-shrink-0"
                 />

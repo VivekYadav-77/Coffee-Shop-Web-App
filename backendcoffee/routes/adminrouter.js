@@ -1,25 +1,17 @@
 import { Router } from "express";
 import { ProductModel } from "../models/productschema.js";
-import multer from "multer";
-import path from "path";
+import upload from "../config/cloudinary.config.js";
 const adminroute = Router();
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.resolve("./public/products/"));
-  },
-  filename: function (req, file, cb) {
-    const filename = `${Date.now()}-${file.originalname}`;
-
-    cb(null, filename);
-  },
-});
-const upload = multer({ storage: storage });
 
 adminroute.post("/products", upload.single("image"), async (req, res) => {
   const io = req.app.get("socketio");
+      console.log("hello from coudinary")
+
   try {
     const { name, price, description, category, roastLevel, inStock, notes } =
       req.body;
+          console.log("hello from try")
+
     const newProduct = new ProductModel({
       name,
       price: parseFloat(price),
@@ -28,17 +20,17 @@ adminroute.post("/products", upload.single("image"), async (req, res) => {
       roastLevel,
       inStock: inStock === "true",
       notes,
-      imageUrl: req.file ? `/products/${req.file.filename}` : "",
+      imageUrl: req.file ? req.file.path: "",
     });
     await newProduct.save();
     io.emit("product_add", newProduct);
     res.status(201).json(newProduct);
   } catch (error) {
+console.log("hello from catch - THE ERROR IS:", error); // Will now print the detailed error
     res.status(500).json({ message: "Server error from me " });
   }
 });
 
-// UPDATE a full product at /admin/products/:id
 adminroute.put("/products/:id", upload.single("image"), async (req, res) => {
   const io = req.app.get("socketio");
 
@@ -53,7 +45,7 @@ adminroute.put("/products/:id", upload.single("image"), async (req, res) => {
       updateData.inStock = updateData.inStock === "true";
     }
     if (req.file) {
-      updateData.imageUrl = `/products/${req.file.filename}`;
+      updateData.imageUrl = req.file.path;
     }
 
     const updatedProduct = await ProductModel.findByIdAndUpdate(

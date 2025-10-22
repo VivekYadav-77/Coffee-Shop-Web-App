@@ -10,17 +10,13 @@ import StarRating from "./Starrating.jsx";
 const MenuPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { items: menuItems } = useSelector((state) => state.menu) || {
-    items: [],
-  };
-  const [isLoading, setIsLoading] = useState(true);
-  const { user, isAuthenticated } = useSelector((state) => state.user);
+ const { items: menuItems, isLoading } = useSelector((state) => state.menu);
+  const { user } = useSelector((state) => state.user);
   const backendaddress = import.meta.env.VITE_API_URL;
-const [addedProductId, setAddedProductId] = useState(null);
-    const timerRef = useRef(null);
+  const [addedProductId, setAddedProductId] = useState(null);
+  const timerRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const selectedProduct = useSelector((state) => state.menu.selectedItem);
 
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
@@ -34,6 +30,7 @@ const [addedProductId, setAddedProductId] = useState(null);
     "dessert",
     "shake",
     "cookie",
+    "cake",
   ];
   const handleAddToCart = async (e,product) => {
      e.preventDefault();
@@ -55,19 +52,6 @@ const [addedProductId, setAddedProductId] = useState(null);
     }
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    productsApi
-      .getAllProducts()
-      .then((data) => {
-        if (data && Array.isArray(data.products)) {
-          dispatch(setMenuItems(data.products));
-        }
-      })
-      .catch((error) => console.error("Failed to fetch products:", error))
-      .finally(() => setIsLoading(false));
-  }, [dispatch]);
-
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
       const matchesCategory =
@@ -79,6 +63,13 @@ const [addedProductId, setAddedProductId] = useState(null);
       return matchesCategory && matchesSearch;
     });
   }, [menuItems, searchTerm, activeCategory]);
+  const getImageUrl = (url) => {
+        if (!url) return ''; 
+        if (url.startsWith('http')) {
+            return url; 
+        }
+        return `${backendaddress}${url}`; 
+    };
 
   return (
         <div className="min-h-screen text-white pt-28 pb-16 bg-gradient-to-br from-black via-violet-900 to-indigo-900">
@@ -101,7 +92,7 @@ const [addedProductId, setAddedProductId] = useState(null);
                                 className="w-full bg-slate-800 border border-slate-700 rounded-full py-3 pl-12 pr-4 focus:ring-2 focus:ring-orange-700 focus:outline-none"
                             />
                         </div>
-                        <div className="flex items-center gap-2 w-full overflow-x-auto scrollbar-hide pb-2 md:pb-0">
+                        <div className="flex items-center gap-2 w-full overflow-x-auto no-scrollbar pb-2 md:pb-0">
                             {categories.map((category) => (
                                 <button
                                     key={category}
@@ -135,7 +126,7 @@ const [addedProductId, setAddedProductId] = useState(null);
                                             className="cursor-pointer bg-slate-800 rounded-lg overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-2xl hover:shadow-yellow-400/10 hover:-translate-y-2"
                                         >
                                             <div className="relative h-56">
-                                                <img src={`${backendaddress}${item.imageUrl}`} alt={item.name} className="w-full h-full object-cover" />
+                                                <img src={getImageUrl(item.imageUrl)} alt={item.name} className="w-full h-full object-cover" />
                                             </div>
                                             <div className="p-4 flex flex-col flex-grow">
                                                 <p className="text-xs text-yellow-400 font-semibold uppercase">{item.category}</p>

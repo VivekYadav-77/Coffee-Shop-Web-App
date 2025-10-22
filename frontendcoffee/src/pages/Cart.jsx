@@ -56,6 +56,13 @@ const Cart = () => {
   const taxRate = 0.05;
   const taxAmount = totalAmount * taxRate;
   const finalTotal = totalAmount + shippingFee + taxAmount;
+  const getImageUrl = (url) => {
+        if (!url) return ''; 
+        if (url.startsWith('http')) {
+            return url; 
+        }
+        return `${backendaddress}${url}`; 
+    };
 
   if (items.length === 0) {
     return (
@@ -113,7 +120,7 @@ const Cart = () => {
                 style={{ animationDelay: `${index * 0.05}s`, opacity: 0 }}
               >
                 <img
-                  src={`${backendaddress}${item.imageUrl}`}
+                  src={getImageUrl(item.imageUrl)}
                   alt={item.name}
                   className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl flex-shrink-0"
                 />

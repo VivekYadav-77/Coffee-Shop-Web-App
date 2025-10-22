@@ -69,6 +69,13 @@ const ProductDetails = () => {
       alert(error.response?.data?.message || "Failed to submit review.");
     }
   };
+  const getImageUrl = (url) => {
+        if (!url) return ''; 
+        if (url.startsWith('http')) {
+            return url; 
+        }
+        return `${backendaddress}${url}`; 
+    };
 
   if (!selectedProduct) {
     return (
@@ -106,7 +113,7 @@ const ProductDetails = () => {
             <div className="aspect-square bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-2xl p-3 shadow-2xl">
               <img
                 className="w-full h-full rounded-xl object-cover"
-                src={`${backendaddress}${selectedProduct.imageUrl}`}
+                src={getImageUrl(selectedProduct.imageUrl)}
                 alt={selectedProduct.name}
               />
             </div>

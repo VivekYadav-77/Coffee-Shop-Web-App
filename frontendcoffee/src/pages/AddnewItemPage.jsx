@@ -21,6 +21,7 @@ const AddProductForm = ({ onSave, onCancel, productToEdit, isLoading }) => {
     "shake",
     "cookie",
     "sandwich",
+    "cake",
   ];
   const fileInputRef = useRef(null);
 
@@ -37,7 +38,7 @@ const AddProductForm = ({ onSave, onCancel, productToEdit, isLoading }) => {
         notes: productToEdit.notes || "",
       });
       if (productToEdit.imageUrl) {
-        setImagePreview(`${backendaddress}${productToEdit.imageUrl}`);
+        setImagePreview(getImageUrl(productToEdit.imageUrl));
       }
     } else {
       setFormData({
@@ -73,6 +74,14 @@ const AddProductForm = ({ onSave, onCancel, productToEdit, isLoading }) => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
+   const getImageUrl = (url) => {
+        if (!url) return ''; 
+        if (url.startsWith('http')) {
+            return url;
+        }
+        return `${backendaddress}${url}`; 
+    };
 
   const removeImage = () => {
     setImageFile(null);

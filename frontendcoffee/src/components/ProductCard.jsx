@@ -44,6 +44,13 @@ if (!user) {
       navigate("/login");
     }
   };
+  const getImageUrl = (url) => {
+        if (!url) return ''; 
+        if (url.startsWith('http')) {
+            return url;
+        }
+        return `${backendaddress}${url}`; 
+    };
 
   return (
     <Link to={`/product/${product._id}`} className="group h-full">
@@ -53,7 +60,7 @@ if (!user) {
       >
         <div className="h-48 flex items-center justify-center overflow-hidden relative">
           <img
-            src={`${backendaddress}${product.imageUrl}`}
+            src={getImageUrl(product.imageUrl)}
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             loading="lazy"

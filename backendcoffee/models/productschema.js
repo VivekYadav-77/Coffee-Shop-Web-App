@@ -26,6 +26,7 @@ const ProductSchema = new mongoose.Schema(
         "shake",
         "cookie",
         "sandwich",
+        "cake",
       ],
       required: true,
     },
