@@ -101,6 +101,9 @@ This application is divided into three user experiences, each with its own set o
     EMAIL_USER=your_verified_sendgrid_email
     GEMINI_API_KEY=your_gemini_key
     OPENROUTESERVICE_KEY=your_ors_key
+    CLOUDINARY_CLOUD_NAME=your cloudinary name
+    CLOUDINARY_API_KEY=your api key
+    CLOUDINARY_API_SECRET=your api secret 
     ```
 4.  Start the server:
     ```bash
