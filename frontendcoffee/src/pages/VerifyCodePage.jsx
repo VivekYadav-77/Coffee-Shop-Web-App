@@ -93,7 +93,7 @@ const VerifyCodePage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-6 bg-orange-700 text-black font-bold py-3 rounded-lg transition-colors hover:bg-yellow-600 disabled:opacity-50"
+            className="w-full mt-6 bg-orange-700 text-black font-bold py-3 rounded-lg transition-colors hover:bg-orange-600 disabled:opacity-50"
           >
             {isLoading ? "Verifying..." : "Verify Account"}
           </button>

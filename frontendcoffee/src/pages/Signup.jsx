@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginStart, loginFailure } from "../redux/slices/userSlice.js";
 import { authApi } from "../utils/api.js";
-import { Coffee, Eye, EyeOff, ArrowBigLeft } from "lucide-react";
+import { Coffee, Eye, EyeOff, SendToBackIcon, SendToBack } from "lucide-react";
 const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ const Signup = () => {
       });
       navigate("/verify-code", { state: { email: formData.email } });
     } catch (err) {
-      console.error("5. API call failed with error:", err);
+      console.error("an error occured:");
 
       dispatch(
         loginFailure({ signup: err.message } || { signup: "login failed" })
@@ -77,11 +77,6 @@ const Signup = () => {
                 The Roasting House
               </h2>
             </div>{" "}
-            <div className="flex justify-evenly items-center">
-              <button onClick={handlereturntohome}>
-                <ArrowBigLeft icon={15} /> Back{" "}
-              </button>
-            </div>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold mb-2 bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
             Join The Roasting House

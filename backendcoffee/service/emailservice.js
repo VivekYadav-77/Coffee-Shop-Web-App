@@ -2,13 +2,11 @@ import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Set the API key for SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const sendVerificationEmail = async (user, code) => {
     const msg = {
         to: user.email,
-        // IMPORTANT: This 'from' email MUST be the one you verified on SendGrid
         from: process.env.EMAIL_USER,
         subject: 'Your THE ROUSTING HOUSE Verification Code',
         html: `

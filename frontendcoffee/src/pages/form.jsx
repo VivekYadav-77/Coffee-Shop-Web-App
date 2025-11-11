@@ -83,7 +83,7 @@ const Contactform = () => {
 
   return (
     <div className="min-h-scree text-white bg-gradient-to-br  from-black via-violet-900 to-indigo-900">
-      <div className="max-w-4xl mx-auto text-white pt-28">
+      <div className="max-w-4xl mx-auto  text-white pt-28 pb-24">
         <h1 className="text-4xl sm:text-5xl font-bold text-orange-700 mb-4 text-center">
           Let's Connect
         </h1>
@@ -175,7 +175,7 @@ const Contactform = () => {
 
             <button
               type="submit"
-              className="w-full bg-primary text-blue px-6 py-3 rounded-lg font-semibold hover:bg-secondary transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+              className="w-full bg-primary text-blue px-6 py-3 rounded-lg font-semibold hover:bg-secondary transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 bg-orange-600"
             >
               Send Message
             </button>

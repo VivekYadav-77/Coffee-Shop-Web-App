@@ -5,7 +5,6 @@ import {
   sendPasswordResetCodeEmail,
 } from "../service/emailservice.js";
 import {
-  createtokenforuser,
   createRefreshTokenPlain,
 } from "../service/authcookie.js";
 
@@ -22,15 +21,12 @@ const handleusersignup = async (req, res) => {
     const newuser = new Customermodel({ name, email, password });
     const verificationCode = newuser.generateVerificationCode();
     await newuser.save();
-
     await sendVerificationEmail(newuser, verificationCode);
 
-    res
-      .status(201)
-      .json({
-        message:
-          "Registration successful. Please check your email to verify your account.",
-      });
+    res.status(201).json({
+      message:
+        "Registration successful. Please check your email to verify your account.",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -38,26 +34,21 @@ const handleusersignup = async (req, res) => {
 
 const handleVerifyCode = async (req, res) => {
   try {
-    //  Hash the incoming token to match the one stored in the database
     const { email, code } = req.body;
     console.log(
       `[DEBUG] Attempting to verify email: ${email} with code: ${code}`
     );
 
-    //  Find the user by email first
     const user = await Customermodel.findOne({ email });
 
     if (!user) {
-      console.log(`[DEBUG] User with that email not found.`);
       return res
         .status(400)
         .json({ message: "Invalid or expired verification code." });
     }
 
-    //  Hash the incoming code from the user to check it
     const hashedCode = crypto.createHash("sha256").update(code).digest("hex");
 
-    //  Check if the code matches
     if (user.verificationCode !== hashedCode) {
       console.log(
         `[DEBUG] Code does NOT match. DB: ${user.verificationCode}, Received (hashed): ${hashedCode}`
@@ -67,16 +58,12 @@ const handleVerifyCode = async (req, res) => {
         .json({ message: "Invalid or expired verification code." });
     }
 
-    //  Check if the code has expired
     if (user.verificationCodeExpires < Date.now()) {
       console.log(`[DEBUG] Code has EXPIRED.`);
       return res
         .status(400)
         .json({ message: "Invalid or expired verification code." });
     }
-
-    // If all checks pass, verification is successful
-    console.log(`[DEBUG] User found and verified!`);
     user.isVerified = true;
     user.verificationCode = undefined;
     user.verificationCodeExpires = undefined;
@@ -106,11 +93,9 @@ const handleResendVarification = async (req, res) => {
         .json({ message: "This account is already verified." });
     }
 
-    // Generate a new code and save it
     const verificationCode = user.generateVerificationCode();
     await user.save();
 
-    // Send the new email
     await sendVerificationEmail(user, verificationCode);
 
     res
@@ -125,23 +110,31 @@ const handleforgotpassword = async (req, res) => {
     const { email } = req.body;
     const user = await Customermodel.findOne({ email });
 
-    if (user && user.isVerified) {
-      const code = Math.floor(100000 + Math.random() * 900000).toString();
-      user.passwordResetCode = code;
-      user.passwordResetCodeExpires = Date.now() + 600000;
+    if (user) {
+      if (user.isVerified) {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        user.passwordResetCode = code;
+        user.passwordResetCodeExpires = Date.now() + 600000;
 
-      await user.save();
-      await sendPasswordResetCodeEmail(user, code);
+        await user.save();
+        await sendPasswordResetCodeEmail(user, code);
+        return res.status(200).json({
+          message: "Password reset code sent to your email.",
+        });
+      } else {
+        return res.status(404).json({
+            messagenotvarified:
+              "Email not varified  go to login and verify the email first b login with that email"
+          });
+      }
+    } else {
+      return  res.status(200).json({
+          messagenoemail:
+            "No such email is register with us please signin with new email",
+        });
     }
-
-    res
-      .status(200)
-      .json({
-        message:
-          "If an account with that email exists, a password reset code has been sent.",
-      });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 };
 const handleresetpassword = async (req, res) => {
@@ -177,14 +170,11 @@ const handleuserlogin = async (req, res) => {
     const userDoc = await Customermodel.findOne({ email });
     if (!userDoc) return res.status(404).json({ message: "Email not found" });
 
-    //  ADDED: Security check to block login if email is not verified
     if (!userDoc.isVerified) {
-      return res
-        .status(403)
-        .json({
-          message:
-            "Please verify your email before logging in from the signup page .",
-        });
+      return res.status(403).json({
+        message:
+          "Please verify your email before logging in from the signup page .",
+      });
     }
 
     const token = await Customermodel.matchpasswordandgeneratetoken(
@@ -209,12 +199,12 @@ const handleuserlogin = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: isProd,
-      sameSite:isProd ? 'None' : 'Lax',
+      sameSite: isProd ? "None" : "Lax",
     });
     res.cookie("refreshToken", refreshTokenPlain, {
       httpOnly: true,
       secure: isProd,
-      sameSite: isProd ? 'None' : 'Lax',
+      sameSite: isProd ? "None" : "Lax",
     });
 
     return res.json({ user });
@@ -228,7 +218,6 @@ const handleuserlogin = async (req, res) => {
 const handleuserlogout = async (req, res) => {
   res.clearCookie("token");
   res.clearCookie("refreshToken");
-  //  IMPROVEMENT: Added a success response
   return res.status(200).json({ message: "Logged out successfully" });
 };
 

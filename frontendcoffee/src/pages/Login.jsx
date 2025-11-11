@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Coffee, Eye, EyeOff, Mail, Lock } from "lucide-react";
@@ -19,6 +19,9 @@ const Login = () => {
 
   const [showResendLink, setShowResendLink] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
+  useEffect(() => {
+    dispatch(loginFailure(null));
+  }, [dispatch]);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -57,14 +60,16 @@ const Login = () => {
     setResendMessage("Sending...");
     try {
       const response = await authApi.resendVerificationEmail(formData.email);
-      navigate("/verify-code", { state: { email: formData.email } });
       setResendMessage(response.message);
+      setTimeout(() => {
+        navigate("/verify-code", { state: { email: formData.email } });
+      }, 1500)
     } catch (err) {
       setResendMessage(err.response?.data?.message || "Failed to send email.");
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-product-detail pt-14">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-product-detail pt-24">
       <div className="max-w-4xl w-full mx-auto flex rounded-2xl overflow-hidden shadow-2xl bg-black/20 border border-white/15 backdrop-blur-xl">
         {/* Form Section */}
         <div className="w-full lg:w-1/2 p-8 sm:p-12 text-white">

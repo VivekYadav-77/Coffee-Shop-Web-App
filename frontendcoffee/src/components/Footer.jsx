@@ -14,30 +14,11 @@ const Footer = () => {
               <span className="text-xl font-bold">The Roasting House</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
-              Crafting the perfect cup of coffee since 2020. We source the
+              Crafting the perfect cup of coffee since 2025. We source the
               finest beans from around the world and roast them to perfection,
               bringing you an exceptional coffee experience.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-amber-500 transition-colors"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-amber-500 transition-colors"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-amber-500 transition-colors"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
-            </div>
+           
           </div>
 
           {/* Quick Links */}
@@ -67,14 +48,7 @@ const Footer = () => {
                   Contact us
                 </Link>
               </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Shipping Info
-                </a>
-              </li>
+             
             </ul>
           </div>
         </div>

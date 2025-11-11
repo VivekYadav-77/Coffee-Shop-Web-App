@@ -39,8 +39,8 @@ const TeamPage = () => {
         description:
           "A Computer Science student passionate about full-stack development. I work with the MERN stack to build interactive web apps and reliable back-end systems.",
         image: "/TeamImage/Vivek.png",
-        github: "https://github.com/your-profile", // Placeholder
-        linkedin: "https://linkedin.com/in/your-profile", // Placeholder
+        github: "https://github.com/your-profile", 
+        linkedin: "https://linkedin.com/in/your-profile", 
       },
     ],
   };

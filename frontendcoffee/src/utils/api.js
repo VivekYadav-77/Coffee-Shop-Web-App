@@ -107,7 +107,7 @@ export const authApi = {
   signup: async (userData) => {
     try {
       const res = await API.post("/auth/signup", userData);
-
+      console.log("response for signup ",res)
       return res.data.user;
     } catch (error) {
       if (error.response && error.response.data) {
