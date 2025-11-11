@@ -95,7 +95,7 @@ const SpinWheelGame = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br  from-black via-violet-900 to-indigo-900 flex flex-col items-center justify-center text-white p-4 overflow-hidden font-['Bangers'] tracking-wide pt-28">
+    <div className="min-h-screen bg-product-detail flex flex-col items-center justify-center text-white p-4 overflow-hidden font-['Bangers'] tracking-wide pt-28">
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stars.png')] opacity-10"></div>
 
       <motion.div

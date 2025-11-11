@@ -130,7 +130,7 @@ const MyOrders = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-violet-900 to-indigo-900 text-white">
+    <div className="min-h-screen bg-product-detail text-white">
       <div className="max-w-4xl mx-auto py-28 px-4">
         <header className="text-center mb-12">
           <h1 className="text-4xl font-extrabold mb-2">My Orders</h1>

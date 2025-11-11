@@ -2,7 +2,7 @@
 import  { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Coffee, ShoppingCart, User, LogOut, Menu, X, Package, Truck, BarChart3, Utensils, History,Ticket ,Award} from 'lucide-react';
+import { Coffee, ShoppingCart, User, LogOut, Menu, X, Package, Truck, BarChart3, Utensils, History,Ticket ,Award, CupSoda} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../redux/slices/userSlice.js';
 import { authApi } from '../utils/api.js';
@@ -100,7 +100,7 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-3 group">
-                    <Coffee size={36} className="text-red-400 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 [filter:drop-shadow(0_0_10px_theme(colors.red.400/0.5))]" />
+                    <CupSoda size={36} className="text-red-400 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 [filter:drop-shadow(0_0_10px_theme(colors.red.400/0.5))]" />
                     <span className="text-2xl font-bold text-white tracking-wider">The Roasting House</span>
                 </Link>
 

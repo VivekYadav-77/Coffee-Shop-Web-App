@@ -72,7 +72,7 @@ const MenuPage = () => {
     };
 
   return (
-        <div className="min-h-screen text-white pt-28 pb-16 bg-gradient-to-br from-black via-violet-900 to-indigo-900">
+        <div className="min-h-screen text-white pt-28 pb-16 bg-product-detail">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <header className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-extrabold mb-2">Our Menu</h1>

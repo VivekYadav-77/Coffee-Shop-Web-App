@@ -73,7 +73,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pt-28 pb-16 bg-gradient-to-br  from-black via-violet-900 to-indigo-900">
+    <div className="min-h-screen bg-gray-900 text-white pt-28 pb-16 bg-product-detail">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-4xl font-extrabold mb-8 text-center">My Profile</h1>
 

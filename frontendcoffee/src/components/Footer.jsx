@@ -1,4 +1,4 @@
-import { Coffee, Facebook, Instagram, Twitter } from "lucide-react";
+import { Coffee,CupSodaIcon} from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router";
 const Footer = () => {
@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <Coffee className="h-8 w-8 text-amber-500" />
+              <CupSodaIcon className="h-8 w-8 text-amber-500" />
               <span className="text-xl font-bold">The Roasting House</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">

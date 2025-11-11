@@ -52,7 +52,7 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-violet-900 to-indigo-900 flex items-center justify-center text-white p-4">
+    <div className="min-h-screen bg-product-detail flex items-center justify-center text-white p-4">
       <div className="max-w-md w-full text-center bg-gray-800 p-8 rounded-lg shadow-lg">
         <Mail size={48} className="mx-auto text-orange-700 mb-4" />
         <h1 className="text-3xl font-bold">Forgot Password</h1>

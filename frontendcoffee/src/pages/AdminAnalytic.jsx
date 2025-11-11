@@ -47,7 +47,7 @@ const AdminAnalytics = () => {
       : 0;
 
   return (
-    <div className="min-h-screen  text-white pt-28 pb-16 bg-gradient-to-br  from-black via-violet-900 to-indigo-900">
+    <div className="min-h-screen  text-white pt-28 pb-16 bg-product-detail">
       <h1 className="text-4xl font-extrabold mb-8">Business Analytics</h1>
 
       <motion.div

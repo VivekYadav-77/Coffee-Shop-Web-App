@@ -91,7 +91,7 @@ const MyCouponsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br  from-black via-violet-900 to-indigo-900 text-white pt-28 pb-16">
+    <div className="min-h-screen bg-product-detail text-white pt-28 pb-16">
       <div className="max-w-4xl mx-auto px-4">
         <header className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold mb-2 text-orange-700">

@@ -71,7 +71,7 @@ const VerifyCodePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br  from-black via-violet-900 to-indigo-900 flex items-center justify-center text-white text-center p-4">
+    <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center text-white text-center p-4">
       <div>
         <KeyRound size={64} className="mx-auto text-orange-700 mb-4" />
         <h1 className="text-3xl font-bold">Enter Verification Code</h1>

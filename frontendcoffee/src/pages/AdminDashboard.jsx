@@ -71,7 +71,7 @@ const AdminDashboard = () => {
     Delivered: CheckCircle,
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br  from-black via-violet-900 to-indigo-900 text-white pt-28 md:pt-32 pb-8">
+    <div className="min-h-screen bg-product-detail text-white pt-28 md:pt-32 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-8">
           Admin Dashboard

@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+const  feedback =import.meta.env.VITE_Feedback_url
 const Contactform = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -52,7 +52,7 @@ const Contactform = () => {
 
     if (validateForm()) {
       try {
-        const res = await fetch("https://formcarry.com/s/nnNdnJnt4gg", {
+        const res = await fetch(`${feedback}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const Contactform = () => {
   };
 
   return (
-    <div className="min-h-scree text-white bg-gradient-to-br  from-black via-violet-900 to-indigo-900">
+    <div className="min-h-scree text-white bg-product-detail">
       <div className="max-w-4xl mx-auto  text-white pt-28 pb-24">
         <h1 className="text-4xl sm:text-5xl font-bold text-orange-700 mb-4 text-center">
           Let's Connect

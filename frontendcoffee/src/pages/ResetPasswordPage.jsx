@@ -36,7 +36,7 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br  from-black via-violet-900 to-indigo-900 flex items-center justify-center text-white">
+    <div className="min-h-screen bg-product-detail flex items-center justify-center text-white">
       <div className="max-w-md w-full text-center p-8">
         <KeyRound size={48} className="mx-auto text-orange-700 mb-4" />
         <h1 className="text-3xl font-bold">Set a New Password</h1>
