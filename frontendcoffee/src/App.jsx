@@ -1,8 +1,27 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect, useState, lazy, Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx";
+import { loginSuccess, logout } from "./redux/slices/userSlice.js";
+import {
+  clearCart,
+  addToCart,
+  syncCartItem,
+} from "./redux/slices/cartSlice.js";
+import { updateOrAddOrder } from "./redux/slices/orderSlice.js";
+import {
+  setMenuItems,
+  setMenuError,
+  addMenuItem,
+  updateMenuItemState,
+  removeMenuItem,
+} from "./redux/slices/menuSlice.js";
+import { API } from "./utils/api.js";
+import { socket } from "./utils/socket.js";
+import { cartApi, productsApi } from "./utils/api.js";
+
+import MainLayout from "./components/MainLayout.jsx";
+
+// Existing pages
 import Home from "./pages/Home.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
 import Cart from "./pages/Cart.jsx";
@@ -14,22 +33,6 @@ import MyOrders from "./pages/CustomerOrder.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AgentDashboard from "./pages/AgentDashboard.jsx";
 import AdminAnalytics from "./pages/AdminAnalytic.jsx";
-import { loginSuccess, logout } from "./redux/slices/userSlice.js";
-import {
-  clearCart,
-  addToCart,
-  syncCartItem,
-} from "./redux/slices/cartSlice.js";
-import { updateOrAddOrder } from "./redux/slices/orderSlice.js";
-import { API, cartApi, productsApi } from "./utils/api.js";
-import { socket } from "./utils/socket.js";
-import {
-  setMenuItems,
-  addMenuItem,
-  updateMenuItemState,
-  removeMenuItem,
-} from "./redux/slices/menuSlice.js";
-
 import AdminOrderHistory from "./pages/AdminOrderHistory.jsx";
 import TeamPage from "./pages/TeamPage.jsx";
 import Chatbot from "./pages/ChatBot.jsx";
@@ -42,9 +45,25 @@ import PleaseVerifyPage from "./pages/PleaseVerifyEmail.jsx";
 import VerifyCodePage from "./pages/VerifyCodePage.jsx";
 import ForgotPasswordPage from "./pages/ForgotpasswordPage.jsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
+import SpaceNotFound from "./pages/PageNotFound.jsx";
+
+// New feature pages (lazy loaded)
+const VendorDashboard = lazy(() => import("./pages/vendor/VendorDashboard.jsx"));
+const VendorsListing = lazy(() => import("./pages/vendor/VendorsListing.jsx"));
+const VendorStorefront = lazy(() => import("./pages/vendor/VendorStorefront.jsx"));
+const MyDisputes = lazy(() => import("./pages/disputes/MyDisputes.jsx"));
+const RaiseDispute = lazy(() => import("./pages/disputes/RaiseDispute.jsx"));
+const AdminDisputes = lazy(() => import("./pages/disputes/AdminDisputes.jsx"));
+const WalletPage = lazy(() => import("./pages/wallet/WalletPage.jsx"));
+
+const PageLoader = () => (
+  <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
+    <div className="w-10 h-10 border-4 border-[#6b4226] border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
 function App() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const [isVerifying, setIsVerifying] = useState(true);
 
@@ -54,7 +73,6 @@ function App() {
         const res = await API.get("/auth/me", { withCredentials: true });
         dispatch(loginSuccess(res.data.user));
       } catch (err) {
-        // navigate('/login') // Optional: only navigate if not already on a public page
         dispatch(logout());
       } finally {
         setIsVerifying(false);
@@ -62,6 +80,7 @@ function App() {
     };
     verifyUser();
   }, [dispatch]);
+
   useEffect(() => {
     productsApi
       .getAllProducts()
@@ -70,11 +89,15 @@ function App() {
           dispatch(setMenuItems(data.products));
         }
       })
-      .catch((error) => console.error("Failed to pre-load menu:", error));
+      .catch((error) => {
+        console.error("Failed to pre-load menu:", error);
+        dispatch(setMenuError());
+      });
   }, [dispatch]);
+
   useEffect(() => {
     const loadCart = async () => {
-      if (isAuthenticated && user.role == "CUSTOMER") {
+      if (isAuthenticated && user.role === "CUSTOMER") {
         try {
           const cartData = await cartApi.getCart();
           dispatch(clearCart());
@@ -87,7 +110,7 @@ function App() {
                 imageUrl: item.productId.imageUrl,
                 inStock: item.productId.inStock,
                 quantity: item.quantity,
-              })
+              }),
             );
           });
 
@@ -103,6 +126,7 @@ function App() {
     };
     loadCart();
   }, [isAuthenticated, user, dispatch]);
+
   useEffect(() => {
     if (isAuthenticated && user) {
       const personalRoom = `${user.role.toLowerCase()}_${user._id}`;
@@ -112,17 +136,14 @@ function App() {
         socket.emit("join_room", "admin_room");
       } else if (user.role === "AGENT") {
         socket.emit("join_room", "agent_room");
+      } else if (user.role === "VENDOR") {
+        socket.emit("join_room", `vendor_${user.vendorProfile}`);
       }
 
       const handleOrderUpdate = (order) => dispatch(updateOrAddOrder(order));
-
-      const handleProductUpdate = (product) => {
-
-        dispatch(updateMenuItemState(product));
-      };
+      const handleProductUpdate = (product) => dispatch(updateMenuItemState(product));
       const handleProductAdd = (product) => dispatch(addMenuItem(product));
-      const handleProductDelete = (productId) =>
-        dispatch(removeMenuItem(productId));
+      const handleProductDelete = (productId) => dispatch(removeMenuItem(productId));
 
       socket.on("order_update", handleOrderUpdate);
       socket.on("product_update", handleProductUpdate);
@@ -136,18 +157,16 @@ function App() {
       };
     }
   }, [isAuthenticated, user, dispatch]);
+
   if (isVerifying) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">
-        Loading Application...
-      </div>
-    );
+    return <PageLoader />;
   }
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Navbar />
-      <main className="flex-grow">
-        <Routes>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route element={<MainLayout />}>
+          {/* Existing Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
@@ -165,22 +184,30 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/award" element={<SpinWheelGame />} />
           <Route path="/mycoupons" element={<MyCouponsPage />} />
-          <Route path="/mycoupons" element={<MyCouponsPage />} />
           <Route path="/Contactform" element={<Contactform />} />
           <Route path="/please-verify" element={<PleaseVerifyPage />} />
           <Route path="/verify-code" element={<VerifyCodePage />} />
-          <Route
-            path="/verification-failed"
-            element={<div>Verification Failed. Please try again.</div>}
-          />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-        </Routes>
-      </main>
-      <Footer />
-      <Chatbot />
-    </div>
+
+          {/* ── New Multi-Vendor Routes ── */}
+          <Route path="/vendors" element={<VendorsListing />} />
+          <Route path="/vendor/:id" element={<VendorStorefront />} />
+          <Route path="/vendor-dashboard" element={<VendorDashboard />} />
+
+          {/* ── Dispute Routes ── */}
+          <Route path="/raise-dispute" element={<RaiseDispute />} />
+          <Route path="/my-disputes" element={<MyDisputes />} />
+          <Route path="/admin/disputes" element={<AdminDisputes />} />
+
+          {/* ── Wallet Route ── */}
+          <Route path="/wallet" element={<WalletPage />} />
+        </Route>
+        <Route path="*" element={<SpaceNotFound />} />
+      </Routes>
+    </Suspense>
   );
 }
 
 export default App;
+

@@ -1,8 +1,8 @@
 
-import  { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Coffee, ShoppingCart, User, LogOut, Menu, X, Package, Truck, BarChart3, Utensils, History,Ticket ,Award, CupSoda} from 'lucide-react';
+import { Coffee, ShoppingCart, User, LogOut, Menu, X, Package, Truck, BarChart3, Utensils, History, Ticket, Award, CupSoda, Store, Wallet, AlertTriangle, LayoutDashboard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logout } from '../redux/slices/userSlice.js';
 import { authApi } from '../utils/api.js';
@@ -14,7 +14,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const { totalQuantity } = useSelector((state) => state.cart);
     const { isAuthenticated, user } = useSelector((state) => state.user);
-    
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -31,7 +31,7 @@ const Navbar = () => {
         };
         document.addEventListener('mousedown', handleClickOutside);
 
-       return () => {
+        return () => {
             window.removeEventListener('scroll', handleScroll);
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -61,7 +61,7 @@ const Navbar = () => {
     // Reusable NavLink component
     const NavLink = ({ to, icon, children, isAuthRequired = false }) => {
         const active = isActiveLink(to);
-        
+
         const handleClick = (e) => {
             if (isAuthRequired && !isAuthenticated) {
                 e.preventDefault();
@@ -76,8 +76,8 @@ const Navbar = () => {
                 to={to}
                 onClick={handleClick}
                 className={`flex items-center gap-2 px-6 py-2 rounded-full border text-sm font-medium transition-all duration-300
-                    ${active 
-                        ? 'bg-red-400/20 border-red-400/30 text-white shadow-lg' 
+                    ${active
+                        ? 'bg-red-400/20 border-red-400/30 text-white shadow-lg'
                         : 'bg-white/5 border-white/10 text-white/80 hover:bg-red-400/10 hover:text-white hover:-translate-y-0.5'
                     }`}
             >
@@ -86,11 +86,11 @@ const Navbar = () => {
             </Link>
         );
     };
-    
+
     const getInitials = (name = '') => {
         return name.split(' ').map(n => n[0]).join('').toUpperCase();
     };
-    
+
     const navContainerClass = isScrolled
         ? 'py-4 bg-slate-900/50 backdrop-blur-xl shadow-2xl'
         : 'py-6 bg-transparent';
@@ -106,15 +106,14 @@ const Navbar = () => {
 
                 {/* Desktop Navigation */}
                 <nav className="hidden lg:flex items-center gap-4">
-                    <NavLink to="/" icon={<User size={16}/>}>Home</NavLink>
+                    <NavLink to="/" icon={<User size={16} />}>Home</NavLink>
+
+                    {/* Customer Links */}
+                    {user?.role === "CUSTOMER" && <NavLink to="/vendors" icon={<Store size={16} />} isAuthRequired={false}>Restaurants</NavLink>}
                     {user?.role === "CUSTOMER" && <NavLink to="/my-orders" icon={<History size={16} />} isAuthRequired={true}>My Orders</NavLink>}
-                     {user?.role === "CUSTOMER" && <NavLink to="/productsearch" icon={<Coffee size={16}/>} isAuthRequired={true}>Search Item</NavLink>}
-                    {user?.role === "ADMIN" && <NavLink to="/admin" icon={<Package size={16} />} isAuthRequired={true}>Live Orders</NavLink>}
-                    {user?.role === "ADMIN" && <NavLink to="/menumanagement" icon={<Utensils size={16} />} isAuthRequired={true}>Menu</NavLink>}
-                    {user?.role === "ADMIN" && <NavLink to="/admin/analytic" icon={<BarChart3 size={16} />} isAuthRequired={true}>Analytics</NavLink>}
-                    {user?.role === "ADMIN" && <NavLink to="/admin/history" icon={<History size={16} />} isAuthRequired={true}>History</NavLink>}
-                    {user?.role === "AGENT" && <NavLink to="/agent" icon={<Truck size={16} />} isAuthRequired={true}>Dashboard</NavLink>}
-                      {user?.role === "CUSTOMER" && <NavLink to="/award" icon={<Award size={16}/>} isAuthRequired={true}>Award</NavLink>}
+                    {user?.role === "CUSTOMER" && <NavLink to="/productsearch" icon={<Coffee size={16} />} isAuthRequired={true}>Search Item</NavLink>}
+                    {user?.role === "CUSTOMER" && <NavLink to="/wallet" icon={<Wallet size={16} />} isAuthRequired={true}>Wallet</NavLink>}
+                    {user?.role === "CUSTOMER" && <NavLink to="/award" icon={<Award size={16} />} isAuthRequired={true}>Award</NavLink>}
                     {user?.role === "CUSTOMER" && (
                         <Link to="/cart" className="relative p-3 rounded-full bg-white/5 border border-white/10 text-white/80 hover:bg-red-400/10 hover:text-white transition-colors">
                             <ShoppingCart size={20} />
@@ -125,10 +124,29 @@ const Navbar = () => {
                             )}
                         </Link>
                     )}
-                    
+
+                    {/* Vendor Links */}
+                    {user?.role === "VENDOR" && <NavLink to="/vendor-dashboard" icon={<LayoutDashboard size={16} />} isAuthRequired={true}>Dashboard</NavLink>}
+                    {user?.role === "VENDOR" && <NavLink to="/menumanagement" icon={<Utensils size={16} />} isAuthRequired={true}>My Menu</NavLink>}
+                    {user?.role === "VENDOR" && <NavLink to="/wallet" icon={<Wallet size={16} />} isAuthRequired={true}>Wallet</NavLink>}
+
+                    {/* Admin Links */}
+                    {user?.role === "ADMIN" && <NavLink to="/admin" icon={<Package size={16} />} isAuthRequired={true}>Live Orders</NavLink>}
+                    {user?.role === "ADMIN" && <NavLink to="/menumanagement" icon={<Utensils size={16} />} isAuthRequired={true}>Menu</NavLink>}
+                    {user?.role === "ADMIN" && <NavLink to="/admin/analytic" icon={<BarChart3 size={16} />} isAuthRequired={true}>Analytics</NavLink>}
+                    {user?.role === "ADMIN" && <NavLink to="/admin/history" icon={<History size={16} />} isAuthRequired={true}>History</NavLink>}
+                    {user?.role === "ADMIN" && <NavLink to="/admin/disputes" icon={<AlertTriangle size={16} />} isAuthRequired={true}>Disputes</NavLink>}
+
+                    {/* Agent Links */}
+                    {user?.role === "AGENT" && <NavLink to="/agent" icon={<Truck size={16} />} isAuthRequired={true}>Dashboard</NavLink>}
+                    {user?.role === "AGENT" && <NavLink to="/wallet" icon={<Wallet size={16} />} isAuthRequired={true}>Wallet</NavLink>}
+
+                    {/* Not logged in — show Restaurants link */}
+                    {!isAuthenticated && <NavLink to="/vendors" icon={<Store size={16} />}>Restaurants</NavLink>}
+
                     {isAuthenticated ? (
                         <div className="relative" ref={profileRef}>
-                            <button 
+                            <button
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                                 className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-red-400"
                             >
@@ -147,26 +165,37 @@ const Navbar = () => {
                                         <div className="p-4">
                                             <p className="font-bold text-white text-md truncate">{user?.name}</p>
                                             <p className="text-sm text-gray-400 truncate">{user?.email}</p>
+                                            <p className="text-xs text-gray-500 mt-1 capitalize">{user?.role}</p>
                                         </div>
                                         <div className="h-px bg-white/10"></div>
-                                        <div className="p-2">
-                                            <button 
-                                                onClick={handleLogout} 
+                                        <div className="p-2 space-y-1">
+                                            <Link to="/profile" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-white/80 hover:bg-white/10">
+                                                <User size={16} />
+                                                <span>Profile</span>
+                                            </Link>
+                                            <Link to="/mycoupons" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-white/80 hover:bg-white/10">
+                                                <Ticket size={16} />
+                                                <span>My Coupons</span>
+                                            </Link>
+                                            <Link to="/my-disputes" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-white/80 hover:bg-white/10">
+                                                <AlertTriangle size={16} />
+                                                <span>My Disputes</span>
+                                            </Link>
+                                            <div className="h-px bg-white/10 my-1"></div>
+                                            <button
+                                                onClick={handleLogout}
                                                 className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm text-red-400 hover:bg-red-500/10"
-                                            >   
+                                            >
                                                 <LogOut size={16} />
                                                 <span>Logout</span>
                                             </button>
-                                             <NavLink to="/mycoupons"  icon = {<Ticket size={16}/>}>MY Coupons</NavLink>
-                                             <br></br>
-                                            <NavLink to="/profile">Update Profile</NavLink>
                                         </div>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
                     ) : (
-                        <NavLink to="/login" icon={<User size={16}/>}>Sign In</NavLink>
+                        <NavLink to="/login" icon={<User size={16} />}>Sign In</NavLink>
                     )}
                 </nav>
 
@@ -179,39 +208,56 @@ const Navbar = () => {
             {/* Mobile Menu Panel */}
             <AnimatePresence>
                 {isMenuOpen && (
-                    <motion.div 
+                    <motion.div
                         initial={{ x: '100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
                         className="fixed top-0 right-0 h-screen w-full max-w-xs bg-slate-900/95 backdrop-blur-2xl border-l border-white/10 lg:hidden"
                     >
-                        <nav className="flex flex-col items-center justify-center h-full gap-6 p-8">
-                            <NavLink to="/" icon={<User size={16}/>}>Home</NavLink>
-                            
+                        <nav className="flex flex-col items-center justify-center h-full gap-5 p-8 overflow-y-auto">
+                            <NavLink to="/" icon={<User size={16} />}>Home</NavLink>
+
+                            {/* Customer */}
+                            {user?.role === "CUSTOMER" && <NavLink to="/vendors" icon={<Store size={16} />}>Restaurants</NavLink>}
                             {user?.role === "CUSTOMER" && <NavLink to="/my-orders" icon={<History size={16} />} isAuthRequired={true}>My Orders</NavLink>}
-                             {user?.role === "CUSTOMER" && <NavLink to="/award" icon={<Award size={16}/>} isAuthRequired={true}>Award</NavLink>}
-                            {user?.role === "CUSTOMER" && <NavLink to="/cart" icon={<ShoppingCart size={16}/>}>Cart ({totalQuantity})</NavLink>}
-                            
+                            {user?.role === "CUSTOMER" && <NavLink to="/wallet" icon={<Wallet size={16} />} isAuthRequired={true}>Wallet</NavLink>}
+                            {user?.role === "CUSTOMER" && <NavLink to="/award" icon={<Award size={16} />} isAuthRequired={true}>Award</NavLink>}
+                            {user?.role === "CUSTOMER" && <NavLink to="/cart" icon={<ShoppingCart size={16} />}>Cart ({totalQuantity})</NavLink>}
+
+                            {/* Vendor */}
+                            {user?.role === "VENDOR" && <NavLink to="/vendor-dashboard" icon={<LayoutDashboard size={16} />} isAuthRequired={true}>Dashboard</NavLink>}
+                            {user?.role === "VENDOR" && <NavLink to="/menumanagement" icon={<Utensils size={16} />} isAuthRequired={true}>My Menu</NavLink>}
+                            {user?.role === "VENDOR" && <NavLink to="/wallet" icon={<Wallet size={16} />} isAuthRequired={true}>Wallet</NavLink>}
+
+                            {/* Admin */}
                             {user?.role === "ADMIN" && <NavLink to="/admin" icon={<Package size={16} />} isAuthRequired={true}>Live Orders</NavLink>}
                             {user?.role === "ADMIN" && <NavLink to="/menumanagement" icon={<Utensils size={16} />} isAuthRequired={true}>Menu</NavLink>}
                             {user?.role === "ADMIN" && <NavLink to="/admin/analytic" icon={<BarChart3 size={16} />} isAuthRequired={true}>Analytics</NavLink>}
                             {user?.role === "ADMIN" && <NavLink to="/admin/history" icon={<History size={16} />} isAuthRequired={true}>History</NavLink>}
+                            {user?.role === "ADMIN" && <NavLink to="/admin/disputes" icon={<AlertTriangle size={16} />} isAuthRequired={true}>Disputes</NavLink>}
 
+                            {/* Agent */}
                             {user?.role === "AGENT" && <NavLink to="/agent" icon={<Truck size={16} />} isAuthRequired={true}>Dashboard</NavLink>}
+                            {user?.role === "AGENT" && <NavLink to="/wallet" icon={<Wallet size={16} />} isAuthRequired={true}>Wallet</NavLink>}
+
+                            {/* Not logged in */}
+                            {!isAuthenticated && <NavLink to="/vendors" icon={<Store size={16} />}>Restaurants</NavLink>}
 
                             <div className="w-full h-px bg-white/10 my-4"></div>
 
                             {isAuthenticated ? (
-                                <div className='text-center'>
-                                    <p className='text-white font-bold mb-4'>{user?.name}</p>
+                                <div className='text-center space-y-3'>
+                                    <p className='text-white font-bold'>{user?.name}</p>
+                                    <p className='text-gray-400 text-sm capitalize'>{user?.role}</p>
+                                    <NavLink to="/my-disputes" icon={<AlertTriangle size={16} />}>My Disputes</NavLink>
                                     <button onClick={handleLogout} className="flex items-center gap-2 px-6 py-2 text-red-400">
                                         <LogOut size={16} />
                                         <span>Logout</span>
                                     </button>
-                                 </div>
+                                </div>
                             ) : (
-                                <NavLink to="/login" icon={<User size={16}/>}>Sign In</NavLink>
+                                <NavLink to="/login" icon={<User size={16} />}>Sign In</NavLink>
                             )}
                         </nav>
                     </motion.div>

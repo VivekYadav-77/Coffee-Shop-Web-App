@@ -52,7 +52,8 @@ const Signup = () => {
         email: formData.email,
         password: formData.password,
       });
-      navigate("/verify-code", { state: { email: formData.email } });
+      // [TEST MODE] Skip verification — go straight to login
+      navigate("/login");
     } catch (err) {
       console.error("an error occured:");
 

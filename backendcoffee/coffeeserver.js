@@ -10,6 +10,8 @@ import orderrouter from "./routes/orderroute.js";
 import cartrouter from "./routes/cartroute.js";
 import conf from "./config/config.js";
 import adminrouter from "./routes/adminrouter.js";
+import rateLimit from "express-rate-limit";
+import helmet from 'helmet';
 import { ProductModel } from "./models/productschema.js";
 import { userrouter } from "./routes/authrouter.js";
 import {
@@ -23,22 +25,53 @@ import productreviewrouter from "./routes/productReviewroute.js";
 import couponrouter from "./routes/cuponroute.js";
 import { startTokenCleanupJob } from "./expiretokenDelete.js/tokenCleanupJob.js";
 import dotenv from "dotenv";
+import verifyClientRequest from "./middleware/verifyFrontend.js";
 dotenv.config();
 const frontednapi = process.env.FRONTEND_ADDRESS;
 const PORT = process.env.PORT || 3000
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: `${frontednapi}` } });
-app.set("socketio", io);
-mongoconnectionforCoffee(conf.dburl)
-  .then((res) => console.log("mongodb is connected"))
-  .catch((err) => console.log(`error occured ${err}`));
+app.use(
+  helmet(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          objectSrc: ["'none'"],
+          upgradeInsecureRequests: [],
+        },
+      },
+    }),
+  ),
+);
 app.use(
   cors({
     origin: `${frontednapi}`,
     credentials: true,
   })
 );
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+
+  handler: (req, res, next, options) => {
+    res.status(options.statusCode).json({
+      success: false,
+      error: "Too many requests. Please wait 15 minutes before trying again.",
+    });
+  },
+});
+app.use(limiter);
+app.use(verifyClientRequest);
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: `${frontednapi}` } });
+app.set("socketio", io);
+mongoconnectionforCoffee(conf.dburl)
+  .then((res) => console.log("mongodb is connected"))
+  .catch((err) => console.log(`error occured ${err}`));
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
   socket.on("join_room", (room) => {
@@ -52,7 +85,10 @@ app.use(express.static(path.resolve("./public")));
 app.use(express.json());
 app.use(checkforauthcookie("token"));
 app.get("/products", async (req, res) => {
+  console.log("hello from product")
   const products = await ProductModel.find({});
+    console.log("hello from product",products)
+
   return res.json({ products: products });
 });
 app.get("/products/:id", async (req, res) => {
