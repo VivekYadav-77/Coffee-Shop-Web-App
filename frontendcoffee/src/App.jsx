@@ -42,6 +42,7 @@ import PleaseVerifyPage from "./pages/PleaseVerifyEmail.jsx";
 import VerifyCodePage from "./pages/VerifyCodePage.jsx";
 import ForgotPasswordPage from "./pages/ForgotpasswordPage.jsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
+import RoastingHouseLoader from "./components/Loading.jsx";
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -137,11 +138,7 @@ function App() {
     }
   }, [isAuthenticated, user, dispatch]);
   if (isVerifying) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">
-        Loading Application...
-      </div>
-    );
+    return <RoastingHouseLoader/>
   }
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

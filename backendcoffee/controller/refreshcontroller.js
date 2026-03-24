@@ -1,3 +1,4 @@
+import path from "node:path";
 import { Customermodel } from "../models/customerschema.js";
 import {
   createRefreshTokenPlain,
@@ -51,18 +52,19 @@ export async function handleRefresh(req, res) {
     // new access token
     const newAccessToken = createtokenforuser(found);
 
-    const isProd = "production";
     const accessCookieOptions = {
       httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 12 * 60 * 60 * 1000,
+      path:"/"
     };
     const refreshCookieOptions = {
       httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: REFRESH_DAYS * 12 * 60 * 60 * 1000,
+      path:"/"
     };
 
     res.cookie("token", newAccessToken, accessCookieOptions);

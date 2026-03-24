@@ -188,7 +188,6 @@ const handleuserlogin = async (req, res) => {
       req.get("User-Agent") || ""
     );
 
-    const isProd = process.env.NODE_ENV === "production";
     const user = {
       _id: userDoc._id,
       name: userDoc.name,
@@ -198,13 +197,17 @@ const handleuserlogin = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "None" : "Lax",
+      secure: true,
+      sameSite:"none",
+      maxAge: 12 * 60 * 60 * 1000,
+      path:"/"
     });
     res.cookie("refreshToken", refreshTokenPlain, {
       httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "None" : "Lax",
+      secure: true,
+      sameSite: "none",
+       maxAge: REFRESH_DAYS * 12 * 60 * 60 * 1000,
+       path:"/"
     });
 
     return res.json({ user });
@@ -214,10 +217,15 @@ const handleuserlogin = async (req, res) => {
       .json({ message: error.message || "Server error" });
   }
 };
-
+const cookieOption={
+      httpOnly: true,
+      secure: true,
+      sameSite:"none",
+      path:"/"
+}
 const handleuserlogout = async (req, res) => {
-  res.clearCookie("token");
-  res.clearCookie("refreshToken");
+  res.clearCookie("token",cookieOption);
+  res.clearCookie("refreshToken",cookieOption);
   return res.status(200).json({ message: "Logged out successfully" });
 };
 
